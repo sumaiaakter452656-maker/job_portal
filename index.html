@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="Find your next opportunity with opportunities from growing teams across Bangladesh. Search jobs by title, category, or city.">
+  <title>Find your next opportunity — Workly</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17213b;
+      --muted: #788198;
+      --blue: #4a5de8;
+      --blue-dark: #394bd1;
+      --blue-pale: #eef0ff;
+      --line: #e9ebf2;
+      --surface: #fff;
+      --canvas: #f7f8fc;
+      --green: #14876b;
+      --shadow: 0 16px 44px rgba(34, 48, 94, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button, a, select { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(74, 93, 232, .28);
+      outline-offset: 3px;
+    }
+
+    .shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+
+    .site-header {
+      position: relative;
+      z-index: 5;
+      background: rgba(247, 248, 252, .92);
+      border-bottom: 1px solid rgba(233, 235, 242, .8);
+    }
+
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 780;
+      letter-spacing: -.8px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--blue);
+      color: white;
+    }
+
+    .brand-mark svg { width: 21px; height: 21px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      margin-left: auto;
+      color: #626c83;
+      font-size: 14px;
+      font-weight: 550;
+    }
+
+    .nav-links a:hover, .sign-in:hover { color: var(--blue); }
+
+    .nav-actions { display: flex; align-items: center; gap: 22px; }
+    .sign-in { color: #4b556c; font-size: 14px; font-weight: 650; }
+
+    .button {
+      min-height: 43px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: var(--blue);
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .18s ease, transform .18s ease, border-color .18s ease;
+    }
+
+    .button:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .button.small { min-height: 40px; padding: 0 16px; }
+    .button.outline { background: transparent; border-color: #dfe2ef; color: var(--ink); }
+    .button.outline:hover { border-color: var(--blue); color: var(--blue); }
+
+    .menu-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: white;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .menu-toggle svg { width: 20px; height: 20px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 72px 0 57px;
+      background:
+        radial-gradient(ellipse at 87% 18%, rgba(211, 216, 255, .48), transparent 31%),
+        radial-gradient(ellipse at 8% 100%, rgba(231, 234, 255, .52), transparent 32%),
+        #f7f8fc;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 54px;
+      right: max(calc((100vw - 1170px) / 2), 5%);
+      width: 164px;
+      height: 164px;
+      border: 1px solid rgba(111, 126, 238, .13);
+      border-radius: 50%;
+      box-shadow: 0 0 0 25px rgba(111, 126, 238, .035), 0 0 0 50px rgba(111, 126, 238, .025);
+      pointer-events: none;
+    }
+
+    .hero-inner { position: relative; z-index: 1; text-align: center; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 19px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: #7c89f1; }
+
+    h1 {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: clamp(42px, 6vw, 66px);
+      line-height: 1.06;
+      letter-spacing: -3.4px;
+      font-weight: 760;
+    }
+
+    h1 span { color: var(--blue); }
+
+    .hero-copy {
+      max-width: 545px;
+      margin: 19px auto 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .search-panel {
+      width: min(900px, 100%);
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr auto;
+      align-items: center;
+      gap: 0;
+      margin: 35px auto 0;
+      padding: 9px;
+      border: 1px solid rgba(231, 233, 243, .95);
+      border-radius: 13px;
+      background: white;
+      box-shadow: var(--shadow);
+      text-align: left;
+    }
+
+    .search-field {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 6px 16px;
+      border-right: 1px solid var(--line);
+    }
+
+    .search-field svg { width: 19px; height: 19px; flex: 0 0 auto; color: #9099ad; }
+    .search-field label { display: block; margin-bottom: 1px; color: #8a92a5; font-size: 10px; font-weight: 700; }
+    .search-field input, .search-field select {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .search-field input::placeholder { color: #a7adbb; font-weight: 450; }
+    .search-field select { appearance: none; cursor: pointer; }
+    .search-field select:invalid { color: #8b93a5; font-weight: 450; }
+
+    .search-submit { min-height: 48px; margin-left: 8px; padding: 0 22px; }
+    .search-submit svg { width: 16px; height: 16px; }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 21px;
+      color: #858da0;
+      font-size: 12px;
+    }
+    .hero-meta strong { color: #626d85; }
+    .popular-link { color: #65708a; }
+    .popular-link:hover { color: var(--blue); }
+    .meta-separator { color: #c4c9d5; }
+
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      margin-top: 42px;
+      color: #9299aa;
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .trust-label { font-weight: 500; }
+    .trust-name { color: #81899b; font-size: 13px; font-weight: 760; letter-spacing: -.3px; }
+    .trust-name:nth-of-type(3) { letter-spacing: 1px; }
+    .trust-name:nth-of-type(4) { font-family: Georgia, serif; font-weight: 700; }
+
+    .section { padding: 65px 0; }
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 27px;
+    }
+    .section-kicker { margin: 0 0 7px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: 1.3px; text-transform: uppercase; }
+    h2 { margin: 0; font-size: 29px; line-height: 1.2; letter-spacing: -1.1px; }
+    .section-subtitle { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .text-link { display: inline-flex; align-items: center; gap: 7px; color: var(--blue); font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .text-link svg { width: 16px; height: 16px; transition: transform .18s ease; }
+    .text-link:hover svg { transform: translateX(3px); }
+
+    .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .category-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 90px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .category-card:hover { transform: translateY(-3px); border-color: #d6daf9; box-shadow: 0 12px 26px rgba(34, 48, 94, .06); }
+    .category-icon {
+      width: 45px;
+      height: 45px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+    }
+    .category-icon svg { width: 21px; height: 21px; }
+    .category-icon.purple { background: #f0edff; color: #7859dc; }
+    .category-icon.blue { background: #eaf2ff; color: #4381dc; }
+    .category-icon.orange { background: #fff1e8; color: #e4854f; }
+    .category-icon.green { background: #e7f7f1; color: #36a17e; }
+    .category-name { display: block; font-size: 14px; font-weight: 700; }
+    .category-count { display: block; margin-top: 4px; color: #9097a8; font-size: 11px; }
+
+    .jobs-section { padding-top: 21px; }
+    .job-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 20px; }
+    .filter-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-button {
+      min-height: 34px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: #737d92;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .filter-button.active { border-color: #e3e5ff; background: #eeefff; color: var(--blue); }
+    .filter-button:hover:not(.active) { background: #f0f1f6; color: var(--ink); }
+    .results-count { color: #8a92a4; font-size: 12px; white-space: nowrap; }
+
+    .job-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .job-card {
+      min-height: 229px;
+      display: flex;
+      flex-direction: column;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .job-card:hover { transform: translateY(-3px); border-color: #d9ddfa; box-shadow: 0 14px 30px rgba(34, 48, 94, .07); }
+    .job-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .company-mark {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #edf0f5;
+      border-radius: 11px;
+      background: #fff;
+      color: var(--mark-color, #5264df);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.8px;
+    }
+    .company-mark.coral { --mark-color: #e7745c; background: #fff4f0; border-color: #fff0eb; }
+    .company-mark.teal { --mark-color: #228d86; background: #edf9f7; border-color: #e4f4f1; }
+    .company-mark.gold { --mark-color: #bd8a2c; background: #fff8e9; border-color: #f9f0dc; }
+    .company-mark.violet { --mark-color: #7956bd; background: #f5f0ff; border-color: #eee7fb; }
+    .company-mark.blue { --mark-color: #4774c3; background: #eff5ff; border-color: #e7effc; }
+    .save-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: #a1a8b7;
+      cursor: pointer;
+    }
+    .save-button:hover, .save-button.saved { border-color: #eaebff; background: #f4f4ff; color: var(--blue); }
+    .save-button svg { width: 17px; height: 17px; }
+    .job-title { margin: 15px 0 4px; font-size: 16px; font-weight: 740; letter-spacing: -.35px; }
+    .company-name { color: #858da0; font-size: 12px; }
+    .job-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    .tag { padding: 5px 8px; border-radius: 5px; background: #f4f5f8; color: #667087; font-size: 10px; font-weight: 600; }
+    .tag.type { background: #edf0ff; color: #5967cd; }
+    .job-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 15px; }
+    .salary { color: var(--ink); font-size: 12px; font-weight: 720; }
+    .posted { color: #a0a6b4; font-size: 10px; }
+    .empty-state { display: none; padding: 44px 20px; border: 1px dashed #dfe2ec; border-radius: 12px; color: var(--muted); text-align: center; }
+    .empty-state.visible { display: block; }
+    .empty-state strong { display: block; margin-bottom: 5px; color: var(--ink); }
+    .job-grid:empty + .empty-state { display: block; }
+    .search-notice { display: none; margin: -7px 0 18px; color: var(--muted); font-size: 12px; }
+    .search-notice.visible { display: block; }
+
+    .cta-section { padding: 12px 0 72px; }
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      padding: 34px 42px;
+      border-radius: 16px;
+      background: #202b54;
+      color: white;
+    }
+    .cta-panel::after {
+      content: "";
+      position: absolute;
+      top: -103px;
+      right: 175px;
+      width: 250px;
+      height: 250px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 50%;
+      box-shadow: 0 0 0 34px rgba(255,255,255,.035), 0 0 0 69px rgba(255,255,255,.025);
+      pointer-events: none;
+    }
+    .cta-content { position: relative; z-index: 1; }
+    .cta-content h2 { max-width: 510px; font-size: 26px; letter-spacing: -.8px; }
+    .cta-content p { margin: 8px 0 0; color: #b7bfd7; font-size: 13px; }
+    .cta-panel .button { position: relative; z-index: 1; flex: 0 0 auto; background: #fff; color: #3547ce; }
+    .cta-panel .button:hover { background: #eff0ff; }
+
+    .footer { padding: 23px 0; border-top: 1px solid var(--line); background: white; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; color: #8a92a4; font-size: 11px; }
+    .footer .brand { font-size: 16px; }
+    .footer .brand-mark { width: 28px; height: 28px; border-radius: 8px; }
+    .footer .brand-mark svg { width: 17px; height: 17px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 20px; }
+    .footer-links a:hover { color: var(--blue); }
+
+    @media (max-width: 850px) {
+      .nav-links { gap: 19px; }
+      .nav-actions { gap: 14px; }
+      .search-panel { grid-template-columns: 1.2fr 1fr 1fr auto; }
+      .search-field { padding-right: 10px; padding-left: 10px; }
+      .category-grid { grid-template-columns: repeat(2, 1fr); }
+      .job-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 650px) {
+      .shell { width: min(100% - 36px, 520px); }
+      .nav { height: 66px; gap: 12px; }
+      .menu-toggle { display: grid; order: 3; }
+      .nav-actions { margin-left: auto; gap: 14px; }
+      .nav-actions .button { display: none; }
+      .nav-links {
+        position: absolute;
+        top: 65px;
+        right: 18px;
+        left: 18px;
+        display: none;
+        align-items: stretch;
+        gap: 0;
+        padding: 7px 15px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: white;
+        box-shadow: var(--shadow);
+      }
+      .nav-links.open { display: flex; flex-direction: column; }
+      .nav-links a { padding: 12px 4px; border-bottom: 1px solid #f0f1f5; }
+      .nav-links a:last-child { border-bottom: 0; }
+      .hero { padding: 57px 0 44px; }
+      .hero::after { top: 27px; right: -105px; width: 140px; height: 140px; }
+      .eyebrow { margin-bottom: 16px; font-size: 10px; }
+      h1 { max-width: 520px; font-size: clamp(39px, 11vw, 55px); letter-spacing: -2.5px; }
+      .hero-copy { max-width: 450px; margin-top: 14px; font-size: 14px; }
+      .search-panel { grid-template-columns: 1fr 1fr; gap: 8px 0; margin-top: 26px; padding: 10px; }
+      .search-field { min-height: 54px; }
+      .search-field:nth-child(2) { border-right: 0; }
+      .search-field:nth-child(3) { border-top: 1px solid var(--line); }
+      .search-submit { min-height: 46px; margin: 0 0 0 8px; }
+      .hero-meta { gap: 8px; margin-top: 16px; font-size: 11px; }
+      .trust-row { flex-wrap: wrap; gap: 12px 19px; margin-top: 29px; }
+      .trust-label { flex-basis: 100%; }
+      .section { padding: 49px 0; }
+      .section-heading { align-items: flex-start; }
+      h2 { font-size: 25px; }
+      .category-grid { gap: 10px; }
+      .category-card { min-height: 78px; gap: 10px; padding: 12px; }
+      .category-icon { width: 39px; height: 39px; }
+      .category-name { font-size: 12px; }
+      .category-count { font-size: 10px; }
+      .jobs-section { padding-top: 9px; }
+      .job-toolbar { align-items: flex-start; flex-direction: column; gap: 10px; }
+      .job-grid { grid-template-columns: 1fr; }
+      .job-card { min-height: 216px; }
+      .cta-section { padding-bottom: 52px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; padding: 27px 24px; }
+      .cta-content h2 { font-size: 23px; }
+      .cta-panel::after { right: -90px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 380px) {
+      .shell { width: calc(100% - 28px); }
+      .brand { font-size: 19px; }
+      .nav-actions { gap: 10px; }
+      .sign-in { font-size: 12px; }
+      .search-field { gap: 7px; padding: 5px 7px; }
+      .search-field svg { width: 16px; height: 16px; }
+      .search-field input, .search-field select { font-size: 12px; }
+      .search-submit { gap: 5px; padding: 0 10px; font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="index.html" aria-label="Workly home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 8.5h14v10a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18.5v-10Z" stroke="currentColor" stroke-width="1.8"/><path d="M9 8.5V6.8A1.8 1.8 0 0 1 10.8 5h2.4A1.8 1.8 0 0 1 15 6.8v1.7M5 12.5c4.4 2.4 9.6 2.4 14 0M12 12v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        Workly
+      </a>
+      <nav class="nav-links" id="primary-navigation" aria-label="Main navigation">
+        <a href="#jobs">Find a job</a>
+        <a href="#categories">Browse categories</a>
+        <a href="#employers">For employers</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="sign-in" href="login.php">Log in</a>
+        <a class="button small" href="register.php">Create account</a>
+      </div>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell hero-inner">
+        <div class="eyebrow"><span class="eyebrow-dot"></span>Your next chapter starts here</div>
+        <h1 id="hero-title">Find a job that <span>moves you forward.</span></h1>
+        <p class="hero-copy">Discover opportunities from teams building what’s next. Your skills, your ambitions, your next big move — all in one place.</p>
+        <form class="search-panel" id="job-search" role="search">
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <div>
+              <label for="keyword">What are you looking for?</label>
+              <input id="keyword" name="keyword" type="search" placeholder="Job title or keyword">
+            </div>
+          </div>
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 10.2c0 5-7 10.3-7 10.3S5 15.2 5 10.2a7 7 0 1 1 14 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="1.7"/></svg>
+            <div>
+              <label for="location">Where?</label>
+              <select id="location" name="location">
+                <option value="">All locations</option>
+                <option>Dhaka</option>
+                <option>Chattogram</option>
+                <option>Sylhet</option>
+                <option>Rajshahi</option>
+                <option>Remote</option>
+              </select>
+            </div>
+          </div>
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div>
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <option value="">All categories</option>
+                <option>IT / Software</option>
+                <option>Sales</option>
+                <option>Accounts</option>
+                <option>Design</option>
+              </select>
+            </div>
+          </div>
+          <button class="button search-submit" type="submit">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Search jobs
+          </button>
+        </form>
+        <div class="hero-meta">
+          <strong>Popular:</strong>
+          <a class="popular-link" href="#jobs" data-search-term="Software">Software Engineer</a><span class="meta-separator">·</span>
+          <a class="popular-link" href="#jobs" data-search-term="Marketing">Marketing</a><span class="meta-separator">·</span>
+          <a class="popular-link" href="#jobs" data-search-term="Designer">Designer</a><span class="meta-separator">·</span>
+          <a class="popular-link" href="#jobs" data-location="Remote">Remote</a>
+        </div>
+        <div class="trust-row" aria-label="Companies hiring">
+          <span class="trust-label">A better career starts with the right team</span>
+          <span class="trust-name">northstar</span>
+          <span class="trust-name">orbit</span>
+          <span class="trust-name">NEXORA</span>
+          <span class="trust-name">monogram</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="categories" aria-labelledby="categories-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Explore your options</p>
+            <h2 id="categories-title">Browse by category</h2>
+            <p class="section-subtitle">Find the kind of work you love doing.</p>
+          </div>
+          <a class="text-link" href="#jobs">Explore all jobs
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="category-grid">
+          <a class="category-card" href="#jobs" data-category="IT / Software">
+            <span class="category-icon purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8m-4-3.5V20m-3-9 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span><span class="category-name">IT &amp; Software</span><span class="category-count">Build what’s next</span></span>
+          </a>
+          <a class="category-card" href="#jobs" data-category="Sales">
+            <span class="category-icon blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span><span class="category-name">Sales &amp; Marketing</span><span class="category-count">Make an impact</span></span>
+          </a>
+          <a class="category-card" href="#jobs" data-category="Accounts">
+            <span class="category-icon orange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 9h8M8 13h2m4 0h2m-8 3h2m4 0h2M8 3v4m8-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+            <span><span class="category-name">Finance &amp; Accounts</span><span class="category-count">Keep things moving</span></span>
+          </a>
+          <a class="category-card" href="#jobs" data-category="Design">
+            <span class="category-icon green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20H5.5A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5V12m-5.5 7.5 5.5-5.5-2.5-2.5-5.5 5.5-.8 3.3 3.3-.8Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span><span class="category-name">Design &amp; Creative</span><span class="category-count">Bring ideas to life</span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section jobs-section" id="jobs" aria-labelledby="jobs-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">A great place to start</p>
+            <h2 id="jobs-title">Featured opportunities</h2>
+            <p class="section-subtitle">Handpicked roles from teams worth knowing.</p>
+          </div>
+          <a class="text-link" href="#job-search">Search all jobs
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="job-toolbar">
+          <div class="filter-list" role="group" aria-label="Filter featured jobs">
+            <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">All opportunities</button>
+            <button class="filter-button" type="button" data-filter="Full-time" aria-pressed="false">Full-time</button>
+            <button class="filter-button" type="button" data-filter="Remote" aria-pressed="false">Remote</button>
+            <button class="filter-button" type="button" data-filter="Internship" aria-pressed="false">Internship</button>
+          </div>
+          <span class="results-count" id="results-count" aria-live="polite">6 opportunities</span>
+        </div>
+        <p class="search-notice" id="search-notice" aria-live="polite"></p>
+        <div class="job-grid" id="job-grid">
+          <article class="job-card" data-category="IT / Software" data-location="Dhaka" data-type="Full-time" data-keywords="software engineer backend php laravel">
+            <div class="job-top"><span class="company-mark">n.</span><button class="save-button" type="button" aria-label="Save Software Engineer at Northstar" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M6.5 4.5h11v16l-5.5-3.5-5.5 3.5v-16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></div>
+            <h3 class="job-title">Software Engineer</h3><span class="company-name">Northstar Labs · Dhaka</span>
+            <div class="job-tags"><span class="tag type">Full-time</span><span class="tag">On-site</span><span class="tag">Mid-level</span></div>
+            <div class="job-bottom"><span class="salary">৳60k – ৳90k <span class="posted">/ month</span></span><span class="posted">2 days ago</span></div>
+          </article>
+          <article class="job-card" data-category="Design" data-location="Remote" data-type="Remote" data-keywords="product designer ui ux design figma">
+            <div class="job-top"><span class="company-mark coral">o</span><button class="save-button" type="button" aria-label="Save Product Designer at Orbit Studio" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M6.5 4.5h11v16l-5.5-3.5-5.5 3.5v-16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></div>
+            <h3 class="job-title">Product Designer</h3><span class="company-name">Orbit Studio · Remote</span>
+            <div class="job-tags"><span class="tag type">Remote</span><span class="tag">Full-time</span><span class="tag">Mid-level</span></div>
+            <div class="job-bottom"><span class="salary">৳55k – ৳80k <span class="posted">/ month</span></span><span class="posted">1 day ago</span></div>
+          </article>
+          <article class="job-card" data-category="Sales" data-location="Dhaka" data-type="Full-time" data-keywords="marketing specialist growth social media">
+            <div class="job-top"><span class="company-mark teal">N</span><button class="save-button" type="button" aria-label="Save Marketing Specialist at Nexora" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M6.5 4.5h11v16l-5.5-3.5-5.5 3.5v-16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></div>
+            <h3 class="job-title">Marketing Specialist</h3><span class="company-name">Nexora · Dhaka</span>
+            <div class="job-tags"><span class="tag type">Full-time</span><span class="tag">Hybrid</span><span class="tag">Entry level</span></div>
+            <div class="job-bottom"><span class="salary">৳35k – ৳50k <span class="posted">/ month</span></span><span class="posted">3 days ago</span></div>
+          </article>
+          <article class="job-card" data-category="IT / Software" data-location="Chattogram" data-type="Full-time" data-keywords="frontend developer javascript react web">
+            <div class="job-top"><span class="company-mark gold">m</span><button class="save-button" type="button" aria-label="Save Frontend Developer at Monogram" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M6.5 4.5h11v16l-5.5-3.5-5.5 3.5v-16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></div>
+            <h3 class="job-title">Frontend Developer</h3><span class="company-name">Monogram · Chattogram</span>
+            <div class="job-tags"><span class="tag type">Full-time</span><span class="tag">Hybrid</span><span class="tag">Mid-level</span></div>
+            <div class="job-bottom"><span class="salary">৳45k – ৳70k <span class="posted">/ month</span></span><span class="posted">4 days ago</span></div>
+          </article>
+          <article class="job-card" data-category="Accounts" data-location="Dhaka" data-type="Full-time" data-keywords="accounts executive finance accounting excel">
+            <div class="job-top"><span class="company-mark violet">a</span><button class="save-button" type="button" aria-label="Save Accounts Executive at Aster Group" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M6.5 4.5h11v16l-5.5-3.5-5.5 3.5v-16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></div>
+            <h3 class="job-title">Accounts Executive</h3><span class="company-name">Aster Group · Dhaka</span>
+            <div class="job-tags"><span class="tag type">Full-time</span><span class="tag">On-site</span><span class="tag">Entry level</span></div>
+            <div class="job-bottom"><span class="salary">৳30k – ৳42k <span class="posted">/ month</span></span><span class="posted">5 days ago</span></div>
+          </article>
+          <article class="job-card" data-category="IT / Software" data-location="Sylhet" data-type="Internship" data-keywords="junior software developer engineering internship">
+            <div class="job-top"><span class="company-mark blue">p</span><button class="save-button" type="button" aria-label="Save Junior Software Developer at PixelCraft" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none"><path d="M6.5 4.5h11v16l-5.5-3.5-5.5 3.5v-16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></div>
+            <h3 class="job-title">Junior Software Developer</h3><span class="company-name">PixelCraft · Sylhet</span>
+            <div class="job-tags"><span class="tag type">Internship</span><span class="tag">On-site</span><span class="tag">Entry level</span></div>
+            <div class="job-bottom"><span class="salary">৳18k – ৳25k <span class="posted">/ month</span></span><span class="posted">1 week ago</span></div>
+          </article>
+        </div>
+        <div class="empty-state" id="empty-state"><strong>No matching opportunities yet</strong>Try another keyword or adjust your filters.</div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="employers" aria-labelledby="cta-title">
+      <div class="shell">
+        <div class="cta-panel">
+          <div class="cta-content">
+            <h2 id="cta-title">Great teams start with great people.</h2>
+            <p>Meet your next teammate. Share an opportunity with people ready to make a difference.</p>
+          </div>
+          <a class="button" href="register.php">Hire with Workly
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <a class="brand" href="index.html" aria-label="Workly home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 8.5h14v10a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18.5v-10ZM9 8.5V6.8A1.8 1.8 0 0 1 10.8 5h2.4A1.8 1.8 0 0 1 15 6.8v1.7M5 12.5c4.4 2.4 9.6 2.4 14 0M12 12v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Workly
+      </a>
+      <span>© <span id="current-year"></span> Workly. Made for what’s next.</span>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="#jobs">Find a job</a>
+        <a href="#employers">For employers</a>
+        <a href="login.php">Log in</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const searchForm = document.querySelector("#job-search");
+    const keywordInput = document.querySelector("#keyword");
+    const locationSelect = document.querySelector("#location");
+    const categorySelect = document.querySelector("#category");
+    const jobCards = [...document.querySelectorAll(".job-card")];
+    const filterButtons = [...document.querySelectorAll(".filter-button")];
+    const resultsCount = document.querySelector("#results-count");
+    const searchNotice = document.querySelector("#search-notice");
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navigation = document.querySelector("#primary-navigation");
+    let activeType = "all";
+
+    function updateJobs() {
+      const keyword = keywordInput.value.trim().toLowerCase();
+      const location = locationSelect.value.toLowerCase();
+      const category = categorySelect.value;
+      let visibleCount = 0;
+
+      jobCards.forEach((card) => {
+        const searchableText = `${card.dataset.keywords} ${card.dataset.category} ${card.dataset.location} ${card.querySelector(".company-name").textContent} ${card.querySelector(".job-title").textContent}`.toLowerCase();
+        const matches = (!keyword || searchableText.includes(keyword))
+          && (!location || card.dataset.location.toLowerCase() === location)
+          && (!category || card.dataset.category === category)
+          && (activeType === "all" || card.dataset.type === activeType);
+        card.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      resultsCount.textContent = `${visibleCount} ${visibleCount === 1 ? "opportunity" : "opportunities"}`;
+      document.querySelector("#empty-state").classList.toggle("visible", visibleCount === 0);
+      const hasSearch = Boolean(keyword || location || category);
+      searchNotice.textContent = hasSearch ? "Showing featured opportunities that match your search." : "";
+      searchNotice.classList.toggle("visible", hasSearch);
+    }
+
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      updateJobs();
+      document.querySelector("#jobs").scrollIntoView({ behavior: "smooth" });
+    });
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeType = button.dataset.filter;
+        filterButtons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle("active", isActive);
+          item.setAttribute("aria-pressed", String(isActive));
+        });
+        updateJobs();
+      });
+    });
+
+    document.querySelectorAll("[data-category].category-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        categorySelect.value = card.dataset.category;
+        activeType = "all";
+        filterButtons.forEach((button) => {
+          const isActive = button.dataset.filter === "all";
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+        updateJobs();
+      });
+    });
+
+    document.querySelectorAll("[data-search-term], [data-location]").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (link.dataset.searchTerm) keywordInput.value = link.dataset.searchTerm;
+        if (link.dataset.location) locationSelect.value = link.dataset.location;
+        activeType = "all";
+        filterButtons.forEach((button) => {
+          const isActive = button.dataset.filter === "all";
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+        updateJobs();
+      });
+    });
+
+    document.querySelectorAll(".save-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const saved = button.getAttribute("aria-pressed") !== "true";
+        button.setAttribute("aria-pressed", String(saved));
+        button.classList.toggle("saved", saved);
+        button.setAttribute("aria-label", `${saved ? "Unsave" : "Save"} ${button.getAttribute("aria-label").replace(/^(Save|Unsave) /, "")}`);
+      });
+    });
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+      menuToggle.setAttribute("aria-expanded", String(!isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Open navigation" : "Close navigation");
+      navigation.classList.toggle("open", !isOpen);
+    });
+
+    navigation.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        navigation.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Open navigation");
+      });
+    });
+
+    document.querySelector("#current-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
