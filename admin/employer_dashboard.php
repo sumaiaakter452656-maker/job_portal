@@ -1,8 +1,6 @@
 <?php
-/**
- * employer_dashboard.php – Employer Dashboard (design + read-only data)
- */
-require_once __DIR__ . '/dashboard_config.php';
+
+require_once __DIR__ . '/../dashboard_config.php';
 
 $userId = require_role('employer');
 $me = row("SELECT id, name, email, phone, status, created_at FROM users WHERE id = ?", [$userId])
@@ -115,7 +113,7 @@ $jobTypes = ['full_time', 'part_time', 'contract', 'internship', 'remote'];
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
 </head>
 <body class="theme-employer">
 
@@ -590,6 +588,6 @@ $jobTypes = ['full_time', 'part_time', 'contract', 'internship', 'remote'];
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
+<script src="../script.js"></script>
 </body>
 </html>

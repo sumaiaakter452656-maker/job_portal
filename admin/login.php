@@ -1,10 +1,5 @@
 <?php
-/**
- * login.php – Simple login for the dashboards
- * users table-এর email + password (password_hash) দিয়ে login করে,
- * তারপর role অনুযায়ী সঠিক dashboard-এ পাঠায়।
- */
-require_once __DIR__ . '/dashboard_config.php';
+require_once __DIR__ . '../dashboard_config.php';
 
 $dashboards = [
     'admin'    => 'admin_dashboard.php',
@@ -12,8 +7,6 @@ $dashboards = [
     'seeker'   => 'seeker_dashboard.php',
 ];
 
-// আগে থেকে login করা থাকলে auto-redirect করা হয় না —
-// যাতে অন্য role (seeker/employer) দিয়ে আবার login করা যায়।
 $current = (!empty($_SESSION['user_id']) && isset($dashboards[$_SESSION['role'] ?? '']))
     ? ['name' => $_SESSION['name'] ?? 'User', 'role' => $_SESSION['role']]
     : null;

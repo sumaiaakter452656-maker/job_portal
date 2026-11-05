@@ -1,7 +1,5 @@
 <?php
-/**
- * logout.php – session শেষ করে login page-এ পাঠায়
- */
+
 require_once __DIR__ . '/dashboard_config.php';
 
 $_SESSION = [];

@@ -1,8 +1,5 @@
 <?php
-/**
- * admin_dashboard.php – Admin Dashboard (design + read-only data)
- */
-require_once __DIR__ . '/dashboard_config.php';
+require_once __DIR__ . '/../dashboard_config.php';
 
 $adminId = require_role('admin');
 $me = row("SELECT id, name, email FROM users WHERE id = ?", [$adminId]) ?? ['name' => 'Admin', 'email' => ''];
@@ -113,64 +110,14 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+    
 </head>
 <body class="theme-admin">
 
 <!-- ================= SIDEBAR ================= -->
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon"><i class="bi bi-briefcase-fill"></i></div>
-        <div class="brand-text">Jobs<span>Portal</span><small class="brand-role">Admin Panel</small></div>
-        <button class="btn btn-sm text-white ms-auto d-lg-none" id="sidebarClose" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
-    </div>
-
-    <nav class="sidebar-menu">
-        <div class="nav-section">Main</div>
-        <a href="admin_dashboard.php" class="side-link active"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
-        <a href="#analytics" class="side-link"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-
-        <div class="nav-section">Job Management</div>
-        <a href="#recent-jobs" class="side-link"><i class="bi bi-briefcase"></i><span>All Jobs</span></a>
-        <a href="#recent-jobs" class="side-link"><i class="bi bi-hourglass-split"></i><span>Pending Approval</span>
-            <?php if ($pendingJobs): ?><em class="side-badge"><?= $pendingJobs ?></em><?php endif; ?></a>
-        <a href="#" class="side-link"><i class="bi bi-star"></i><span>Featured Jobs</span></a>
-        <a href="#" class="side-link"><i class="bi bi-file-earmark-person"></i><span>Applications</span></a>
-
-        <div class="nav-section">Users</div>
-        <a href="#recent-users" class="side-link"><i class="bi bi-people"></i><span>Job Seekers</span></a>
-        <a href="#recent-users" class="side-link"><i class="bi bi-person-badge"></i><span>Employers</span>
-            <?php if ($pendingUsers): ?><em class="side-badge"><?= $pendingUsers ?></em><?php endif; ?></a>
-        <a href="#top-companies" class="side-link"><i class="bi bi-buildings"></i><span>Companies</span></a>
-
-        <div class="nav-section">Master Data</div>
-        <a href="#quick-add" class="side-link"><i class="bi bi-tags"></i><span>Categories</span></a>
-        <a href="#quick-add" class="side-link"><i class="bi bi-geo-alt"></i><span>Cities</span></a>
-        <a href="#" class="side-link"><i class="bi bi-lightning-charge"></i><span>Skills</span></a>
-        <a href="#" class="side-link"><i class="bi bi-file-earmark-richtext"></i><span>CV Templates</span></a>
-
-        <div class="nav-section">Billing</div>
-        <a href="#packages" class="side-link"><i class="bi bi-box-seam"></i><span>Packages</span></a>
-        <a href="#" class="side-link"><i class="bi bi-arrow-repeat"></i><span>Subscriptions</span></a>
-        <a href="#payments" class="side-link"><i class="bi bi-credit-card"></i><span>Payments</span>
-            <?php if ($pendingPay): ?><em class="side-badge"><?= $pendingPay ?></em><?php endif; ?></a>
-        <a href="#" class="side-link"><i class="bi bi-wallet2"></i><span>Payment Methods</span></a>
-
-        <div class="nav-section">System</div>
-        <a href="#" class="side-link"><i class="bi bi-bell"></i><span>Notifications</span></a>
-        <a href="#" class="side-link"><i class="bi bi-gear"></i><span>Settings</span></a>
-        <a href="logout.php" class="side-link"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
-    </nav>
-
-    <div class="sidebar-footer">
-        <div class="upgrade-box">
-            <h6><i class="bi bi-shield-check me-1"></i> Admin Tips</h6>
-            <p><?= $pendingJobs ?> job(s) &amp; <?= $pendingPay ?> payment(s) are waiting for your review.</p>
-            <a href="#recent-jobs" class="btn btn-light btn-sm w-100">Review Now</a>
-        </div>
-    </div>
-</aside>
-<div class="sidebar-overlay"></div>
+<?php include('includes/leftbar.php');
+?>
 
 <!-- ================= MAIN ================= -->
 <div class="main">
@@ -246,14 +193,14 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                     </ol>
                 </nav>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span class="btn btn-white btn-sm pe-none"><i class="bi bi-calendar3 me-1"></i> <span id="liveDate"><?= date('l, d F Y') ?></span></span>
                 <a href="#recent-jobs" class="btn btn-accent btn-sm"><i class="bi bi-check2-circle me-1"></i> Review Jobs</a>
-            </div>
+            </div> -->
         </div>
 
         <!-- Stat cards -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-6 col-xl-3 reveal">
                 <div class="stat-card tone-blue">
                     <div class="stat-top">
@@ -290,10 +237,10 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                     <div class="stat-foot"><span class="trend-up"><i class="bi bi-arrow-up-right"></i> <?= $appsThisMonth ?></span> this month</div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Mini stats -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-6 col-xl-3 reveal">
                 <div class="mini-stat tone-green"><span class="ico"><i class="bi bi-cash-coin"></i></span>
                     <div><h6 data-count="<?= (int) $revenue ?>" data-prefix="৳">৳0</h6><small>Total Revenue</small></div></div>
@@ -310,10 +257,10 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                 <div class="mini-stat tone-pink"><span class="ico"><i class="bi bi-star-fill"></i></span>
                     <div><h6 data-count="<?= $featuredJobs ?>">0</h6><small>Featured Jobs</small></div></div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Charts -->
-        <div class="row g-3 g-xl-4 mb-4" id="analytics">
+        <!-- <div class="row g-3 g-xl-4 mb-4" id="analytics">
             <div class="col-xl-8 reveal">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -344,10 +291,10 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Recent jobs + categories -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-xl-8 reveal" id="recent-jobs">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -435,10 +382,10 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Payments + Users -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-xl-7 reveal" id="payments">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -497,10 +444,10 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                     <div class="card-x-foot"><a href="#">Manage users <i class="bi bi-arrow-right"></i></a></div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Quick add form + Packages -->
-        <div class="row g-3 g-xl-4 mb-2">
+        <!-- <div class="row g-3 g-xl-4 mb-2">
             <div class="col-xl-5 reveal" id="quick-add">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -511,9 +458,9 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                             <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabSkill" type="button">Skill</button></li>
                         </ul>
                     </div>
-                    <div class="card-x-body tab-content">
+                    <div class="card-x-body tab-content"> -->
                         <!-- Category -->
-                        <form class="tab-pane fade show active" id="tabCategory" data-demo="Category form ready (design preview)" novalidate>
+                        <!-- <form class="tab-pane fade show active" id="tabCategory" data-demo="Category form ready (design preview)" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">Category Name</label>
                                 <div class="input-icon"><i class="bi bi-tag"></i><input type="text" name="name" class="form-control" placeholder="e.g. Marketing" required></div>
@@ -529,9 +476,9 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                                 <?php foreach ($categories as $c): ?><span class="tag"><?= e($c['name']) ?></span><?php endforeach; ?>
                             </div>
                             <button class="btn btn-accent w-100"><i class="bi bi-plus-lg me-1"></i> Add Category</button>
-                        </form>
+                        </form> -->
                         <!-- City -->
-                        <form class="tab-pane fade" id="tabCity" data-demo="City form ready (design preview)" novalidate>
+                        <!-- <form class="tab-pane fade" id="tabCity" data-demo="City form ready (design preview)" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">City Name</label>
                                 <div class="input-icon"><i class="bi bi-geo-alt"></i><input type="text" name="name" class="form-control" placeholder="e.g. Khulna" required></div>
@@ -550,9 +497,9 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                                 <div class="invalid-feedback">Select a division.</div>
                             </div>
                             <button class="btn btn-accent w-100"><i class="bi bi-plus-lg me-1"></i> Add City</button>
-                        </form>
+                        </form> -->
                         <!-- Skill -->
-                        <form class="tab-pane fade" id="tabSkill" data-demo="Skill form ready (design preview)" novalidate>
+                        <!-- <form class="tab-pane fade" id="tabSkill" data-demo="Skill form ready (design preview)" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">Skill Name</label>
                                 <div class="input-icon"><i class="bi bi-lightning-charge"></i><input type="text" name="name" class="form-control" placeholder="e.g. React" required></div>
@@ -593,7 +540,7 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </main>
 
     <footer class="footer">
@@ -611,6 +558,6 @@ $unreadCount = (int) scalar("SELECT COUNT(*) FROM notifications WHERE user_id = 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
+<script src="../script.js"></script>
 </body>
 </html>
