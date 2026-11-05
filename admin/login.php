@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '../dashboard_config.php';
+require_once __DIR__ . '/../dashboard_config.php';
 
 $dashboards = [
     'admin'    => 'admin_dashboard.php',
@@ -58,7 +58,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
 </head>
 <body class="theme-admin auth-page">
 
@@ -133,6 +133,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     </div>
 </div>
 
-<script src="script.js"></script>
+<script src="/script.js"></script>
 </body>
 </html>

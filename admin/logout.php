@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/dashboard_config.php';
+require_once __DIR__ . '/../dashboard_config.php';
 
 $_SESSION = [];
 if (ini_get('session.use_cookies')) {

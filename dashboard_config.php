@@ -1,12 +1,4 @@
 <?php
-/**
- * dashboard_config.php
- * Shared DB connection + small view helpers used by the 3 dashboards.
- * (Read-only: শুধু SELECT query চালায়, কোনো table/structure পরিবর্তন করে না।)
- *
- * আপনার project-এ যদি আগে থেকেই db connection file থাকে,
- * নিচের DB_* constant গুলো সেই অনুযায়ী বদলে নিন।
- */
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -36,7 +28,6 @@ function db(): PDO
     return $pdo;
 }
 
-/** সব row ফেরত দেয়; error হলে খালি array (dashboard যেন ভেঙে না যায়) */
 function rows(string $sql, array $params = []): array
 {
     try {
@@ -49,14 +40,12 @@ function rows(string $sql, array $params = []): array
     }
 }
 
-/** একটি row */
 function row(string $sql, array $params = []): ?array
 {
     $r = rows($sql, $params);
     return $r[0] ?? null;
 }
 
-/** একটি single value (COUNT, SUM ইত্যাদি) */
 function scalar(string $sql, array $params = [], $default = 0)
 {
     $r = row($sql, $params);
@@ -65,29 +54,22 @@ function scalar(string $sql, array $params = [], $default = 0)
     return $v === null ? $default : $v;
 }
 
-/* ---------------- Auth guard ---------------- */
-/**
- * Existing login system-এর session পড়ে role check করে।
- * Login system পরিবর্তন করা হয়নি — শুধু $_SESSION['user_id'] ও $_SESSION['role'] পড়া হচ্ছে।
- */
-const LOGIN_PAGE = 'login.php';   // আপনার login page-এর নাম আলাদা হলে এখানে বদলান
+const LOGIN_PAGE = './login.php';  
 
 function require_role(string $role): int
 {
-    // বিভিন্ন login system বিভিন্ন session key ব্যবহার করে — সাধারণ সবগুলো check করা হচ্ছে
     $id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? $_SESSION['userid']
         ?? ($_SESSION['user']['id'] ?? null);
     $userRole = $_SESSION['role'] ?? $_SESSION['user_role'] ?? $_SESSION['user_type']
         ?? ($_SESSION['user']['role'] ?? null);
 
-    // session-এ role না থাকলে users table থেকে নেওয়া হবে
+
     if ($id && !$userRole) {
         $userRole = scalar("SELECT role FROM users WHERE id = ?", [(int) $id], null);
     }
 
     if (!$id || strtolower((string) $userRole) !== $role) {
         if (!headers_sent()) {
-            // ভুল role দিয়ে login করা থাকলে login page-কে জানানো হয় কোন role দরকার
             header('Location: ' . LOGIN_PAGE . ($id ? '?need=' . urlencode($role) : ''));
         }
         exit('<p style="font-family:sans-serif;padding:2rem">Access denied — please <a href="' . LOGIN_PAGE . '">login</a> as <b>' . $role . '</b>.</p>');
@@ -95,7 +77,6 @@ function require_role(string $role): int
     return (int) $id;
 }
 
-/* ---------------- View helpers ---------------- */
 function e($v): string
 {
     return htmlspecialchars((string) ($v ?? ''), ENT_QUOTES, 'UTF-8');
@@ -123,14 +104,11 @@ function initials(?string $name): string
     return $out ?: '?';
 }
 
-/** নাম থেকে consistent avatar color */
 function avatar_color(?string $name): string
 {
     $colors = ['blue', 'green', 'orange', 'purple', 'pink', 'cyan'];
     return $colors[crc32((string) $name) % count($colors)];
 }
-
-/** status অনুযায়ী soft badge */
 function badge(?string $status): string
 {
     $map = [
@@ -168,7 +146,7 @@ function salary_range($min, $max): string
     return taka($min ?: $max);
 }
 
-/** গত N মাসের key => label (e.g. '2026-11' => 'Nov') */
+
 function last_months(int $n = 6): array
 {
     $out = [];
@@ -179,7 +157,7 @@ function last_months(int $n = 6): array
     return $out;
 }
 
-/** GROUP BY ym result কে মাস অনুযায়ী array তে সাজায় (missing মাস = 0) */
+
 function fill_months(array $months, array $data, string $key = 'ym', string $val = 'c'): array
 {
     $map = array_column($data, $val, $key);
@@ -190,7 +168,6 @@ function fill_months(array $months, array $data, string $key = 'ym', string $val
     return $out;
 }
 
-/** company logo বা initials avatar */
 function logo_or_avatar(?string $logo, ?string $name, string $size = ''): string
 {
     if ($logo) {
