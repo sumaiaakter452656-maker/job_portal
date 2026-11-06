@@ -21,69 +21,13 @@
 <div class="main">
 
     <!-- Topbar -->
-    <header class="topbar">
-        <button class="icon-btn" id="sidebarToggle" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
-
-        <div class="top-search">
-            <i class="bi bi-search"></i>
-            <input type="search" id="globalSearch" placeholder="Search jobs, users, payments… (press Enter)">
-        </div>
-
-        <div class="topbar-right">
-            <a href="index.php" class="btn btn-white btn-sm d-none d-md-inline-flex align-items-center gap-1" target="_blank">
-                <i class="bi bi-box-arrow-up-right"></i> View Site
-            </a>
-
-            <div class="dropdown">
-                <button class="icon-btn" data-bs-toggle="dropdown" aria-label="Notifications">
-                    <i class="bi bi-bell"></i>
-                    <span class="dot">4</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end notif-menu">
-                    <div class="notif-head">
-                        <strong>Notifications</strong>
-                        <span class="tag tag-accent">4 new</span>
-                    </div>
-                    
-                        <a href="#" class="notif-item Demo">
-                            <span class="ico"><i class="bi bi-bell"></i></span>
-                            <div><p>Your account has a new update.</p><small class="text-muted">2 hours ago</small></div>
-                        </a>
-                    
-                        <div class="empty-state py-4"><i class="bi bi-bell-slash"></i>No notifications yet</div>
-                    
-                    <a href="#" class="d-block text-center py-2 small fw-semibold">View all</a>
-                </div>
-            </div>
-
-            <div class="dropdown">
-                <button class="user-chip" data-bs-toggle="dropdown">
-                    <span class="avatar avatar-accent round">AD</span>
-                    <span class="meta text-start d-none d-sm-block">
-                        <span class="name d-block">Admin User</span>
-                        <span class="role">Administrator</span>
-                    </span>
-                    <i class="bi bi-chevron-down small text-muted d-none d-sm-block"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li class="px-3 py-2"><strong class="d-block">Admin User</strong><small class="text-muted">admin@example.com</small></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> My Profile</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-key"></i> Change Password</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="../index.html"><i class="bi bi-box-arrow-right text-danger"></i> Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
-
+    <?php include('./includes/header.php');?>
     <!-- Content -->
     <main class="content">
 
         <div class="page-head">
             <div>
-                <h1><span data-greeting>Welcome</span>, Alex 👋</h1>
+                <h1><span data-greeting>Welcome</span>, Sumaia 👋</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="admin_dashboard.html">Home</a></li>
@@ -138,7 +82,7 @@
         </div>
 
         <!-- Mini stats -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-6 col-xl-3 reveal">
                 <div class="mini-stat tone-green"><span class="ico"><i class="bi bi-cash-coin"></i></span>
                     <div><h6 data-count="48500" data-prefix="৳">৳0</h6><small>Total Revenue</small></div></div>
@@ -155,10 +99,10 @@
                 <div class="mini-stat tone-pink"><span class="ico"><i class="bi bi-star-fill"></i></span>
                     <div><h6 data-count="16">0</h6><small>Featured Jobs</small></div></div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Charts -->
-        <div class="row g-3 g-xl-4 mb-4" id="analytics">
+        <!-- <div class="row g-3 g-xl-4 mb-4" id="analytics">
             <div class="col-xl-8 reveal">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -189,10 +133,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Recent jobs + categories -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-xl-8 reveal" id="recent-jobs">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -280,10 +224,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Payments + Users -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-xl-7 reveal" id="payments">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -342,10 +286,10 @@
                     <div class="card-x-foot"><a href="#">Manage users <i class="bi bi-arrow-right"></i></a></div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Quick add form + Packages -->
-        <div class="row g-3 g-xl-4 mb-2">
+        <!-- <div class="row g-3 g-xl-4 mb-2">
             <div class="col-xl-5 reveal" id="quick-add">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -356,9 +300,9 @@
                             <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabSkill" type="button">Skill</button></li>
                         </ul>
                     </div>
-                    <div class="card-x-body tab-content">
+                    <div class="card-x-body tab-content"> -->
                         <!-- Category -->
-                        <form class="tab-pane fade show active" id="tabCategory" data-demo="Category form ready (design preview)" novalidate>
+                        <!-- <form class="tab-pane fade show active" id="tabCategory" data-demo="Category form ready (design preview)" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">Category Name</label>
                                 <div class="input-icon"><i class="bi bi-tag"></i><input type="text" name="name" class="form-control" placeholder="e.g. Marketing" required></div>
@@ -374,9 +318,9 @@
                                 <span class="tag">Sample User</span>
                             </div>
                             <button class="btn btn-accent w-100"><i class="bi bi-plus-lg me-1"></i> Add Category</button>
-                        </form>
+                        </form> -->
                         <!-- City -->
-                        <form class="tab-pane fade" id="tabCity" data-demo="City form ready (design preview)" novalidate>
+                        <!-- <form class="tab-pane fade" id="tabCity" data-demo="City form ready (design preview)" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">City Name</label>
                                 <div class="input-icon"><i class="bi bi-geo-alt"></i><input type="text" name="name" class="form-control" placeholder="e.g. Khulna" required></div>
@@ -395,17 +339,17 @@
                                 <div class="invalid-feedback">Select a division.</div>
                             </div>
                             <button class="btn btn-accent w-100"><i class="bi bi-plus-lg me-1"></i> Add City</button>
-                        </form>
+                        </form> -->
                         <!-- Skill -->
-                        <form class="tab-pane fade" id="tabSkill" data-demo="Skill form ready (design preview)" novalidate>
+                        <!-- <form class="tab-pane fade" id="tabSkill" data-demo="Skill form ready (design preview)" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">Skill Name</label>
                                 <div class="input-icon"><i class="bi bi-lightning-charge"></i><input type="text" name="name" class="form-control" placeholder="e.g. React" required></div>
                                 <div class="invalid-feedback">Please enter a skill.</div>
                             </div>
                             <button class="btn btn-accent w-100"><i class="bi bi-plus-lg me-1"></i> Add Skill</button>
-                        </form>
-                    </div>
+                        </form> -->
+                    <!-- </div>
                 </div>
             </div>
 
@@ -438,13 +382,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </main>
 
-    <footer class="footer">
-        <span>© <span id="year">2026</span> Jobs Portal. All rights reserved.</span>
-        <span>Admin Panel · v1.0</span>
-    </footer>
+     <?php include('./includes/footer.php');?>
+
 </div>
 
 <!-- Toast -->
