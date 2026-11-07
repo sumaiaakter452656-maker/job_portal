@@ -370,7 +370,7 @@
         </div> -->
     </main>
 
-    <?php include('./includes/employer_leftbar.php');?>
+    <?php include('./includes/employer_footer.php');?>
 </div>
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">

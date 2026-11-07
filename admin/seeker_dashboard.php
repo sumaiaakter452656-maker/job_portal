@@ -14,108 +14,12 @@
 <body class="theme-seeker">
 
 <!-- ================= SIDEBAR ================= -->
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon"><i class="bi bi-briefcase-fill"></i></div>
-        <div class="brand-text">Jobs<span>Portal</span><small class="brand-role">Job Seeker</small></div>
-        <button class="btn btn-sm text-white ms-auto d-lg-none" id="sidebarClose" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
-    </div>
-
-    <nav class="sidebar-menu">
-        <div class="nav-section">Main</div>
-        <a href="seeker_dashboard.html" class="side-link active"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
-        <a href="#" class="side-link"><i class="bi bi-search"></i><span>Find Jobs</span></a>
-        <a href="#recommended" class="side-link"><i class="bi bi-stars"></i><span>Recommended</span></a>
-
-        <div class="nav-section">My Jobs</div>
-        <a href="#applications" class="side-link"><i class="bi bi-send-check"></i><span>Applied Jobs</span>
-            <em class="side-badge">3580</em></a>
-        <a href="#saved" class="side-link"><i class="bi bi-bookmark-heart"></i><span>Saved Jobs</span></a>
-        <a href="#pipeline" class="side-link"><i class="bi bi-kanban"></i><span>Application Status</span></a>
-
-        <div class="nav-section">My CV</div>
-        <a href="#profile" class="side-link"><i class="bi bi-person-vcard"></i><span>My Profile</span></a>
-        <a href="#cv" class="side-link"><i class="bi bi-file-earmark-richtext"></i><span>CV Builder</span></a>
-        <a href="#cv" class="side-link"><i class="bi bi-mortarboard"></i><span>Education</span></a>
-        <a href="#cv" class="side-link"><i class="bi bi-building"></i><span>Experience</span></a>
-        <a href="#profile" class="side-link"><i class="bi bi-lightning-charge"></i><span>Skills</span></a>
-        <a href="#" class="side-link"><i class="bi bi-award"></i><span>Projects &amp; Certificates</span></a>
-
-        <div class="nav-section">Account</div>
-        <a href="#" class="side-link"><i class="bi bi-bell"></i><span>Notifications</span>
-            <em class="side-badge">4</em></a>
-        <a href="#update-profile" class="side-link"><i class="bi bi-gear"></i><span>Settings</span></a>
-        <a href="../index.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
-    </nav>
-
-    <div class="sidebar-footer">
-        <div class="upgrade-box">
-            <h6><i class="bi bi-rocket-takeoff me-1"></i> Profile Demo% done</h6>
-            <p>A complete profile gets noticed by employers more often.</p>
-            <a href="#profile" class="btn btn-light btn-sm w-100">Complete Profile</a>
-        </div>
-    </div>
-</aside>
-<div class="sidebar-overlay"></div>
+ <?php include('./includes/seeker_leftbar.php');?>
 
 <!-- ================= MAIN ================= -->
 <div class="main">
-
-    <header class="topbar">
-        <button class="icon-btn" id="sidebarToggle" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
-
-        <div class="top-search">
-            <i class="bi bi-search"></i>
-            <input type="search" id="globalSearch" placeholder="Search your applications… (press Enter)">
-        </div>
-
-        <div class="topbar-right">
-            <a href="#" class="btn btn-accent btn-sm d-none d-md-inline-flex align-items-center gap-1"><i class="bi bi-search"></i> Browse Jobs</a>
-
-            <a href="#saved" class="icon-btn d-none d-sm-inline-grid" aria-label="Saved jobs" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Saved Jobs">
-                <i class="bi bi-bookmark"></i><span class="dot">Demo</span>
-            </a>
-
-            <div class="dropdown">
-                <button class="icon-btn" data-bs-toggle="dropdown" aria-label="Notifications">
-                    <i class="bi bi-bell"></i>
-                    <span class="dot">4</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end notif-menu">
-                    <div class="notif-head"><strong>Notifications</strong><span class="tag tag-accent">4 new</span></div>
-                    
-                        <a href="#" class="notif-item Demo">
-                            <span class="ico"><i class="bi bi-briefcase"></i></span>
-                            <div><p>Your account has a new update.</p><small class="text-muted">2 hours ago</small></div>
-                        </a>
-                    
-                        <div class="empty-state py-4"><i class="bi bi-bell-slash"></i>No notifications yet</div>
-                    
-                    <a href="#" class="d-block text-center py-2 small fw-semibold">View all</a>
-                </div>
-            </div>
-
-            <div class="dropdown">
-                <button class="user-chip" data-bs-toggle="dropdown">
-                    <span class="avatar avatar-accent round">AD</span>
-                    <span class="meta text-start d-none d-sm-block">
-                        <span class="name d-block">Admin User</span>
-                        <span class="role">Web Developer</span>
-                    </span>
-                    <i class="bi bi-chevron-down small text-muted d-none d-sm-block"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li class="px-3 py-2"><strong class="d-block">Admin User</strong><small class="text-muted">admin@example.com</small></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#profile"><i class="bi bi-person"></i> My Profile</a></li>
-                    <li><a class="dropdown-item" href="#cv"><i class="bi bi-file-earmark-pdf"></i> My CV</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-key"></i> Change Password</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="../index.html"><i class="bi bi-box-arrow-right text-danger"></i> Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <?php include('./includes/seeker_header.php');?>
+    
 
     <main class="content">
 
@@ -184,7 +88,7 @@
         </div>
 
         <!-- Pipeline + chart -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-xl-7 reveal" id="pipeline">
                 <div class="card-x">
                     <div class="card-x-head"><div><h5>Application Status</h5><p>Where your applications currently stand</p></div></div>
@@ -203,10 +107,10 @@
                              data-series='[{"name":"Applications","color":"#6366f1","values":[12,18,15,25,22,31]},{"name":"New Registrations","color":"#22d3ee","values":[6,9,8,13,11,17]}]'></div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Profile card -->
-            <div class="col-xl-5 reveal" id="profile">
+            <!-- <div class="col-xl-5 reveal" id="profile">
                 <div class="card-x profile-card">
                     <div class="profile-cover"></div>
                     <div class="px-4 pb-1">
@@ -242,10 +146,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>  -->
 
         <!-- Recent applications -->
-        <div class="row g-3 g-xl-4 mb-4">
+        <!-- <div class="row g-3 g-xl-4 mb-4">
             <div class="col-xl-8 reveal" id="applications">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -305,10 +209,10 @@
                     <div class="card-x-foot"><a href="#">All saved jobs <i class="bi bi-arrow-right"></i></a></div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Recommended jobs -->
-        <div class="card-x mb-4 reveal" id="recommended" style="height:auto">
+        <!-- <div class="card-x mb-4 reveal" id="recommended" style="height:auto">
             <div class="card-x-head">
                 <div><h5>Recommended for You</h5><p>Open jobsTechnology you haven't applied to yet</p></div>
                 <a href="#" class="btn btn-light-accent btn-sm">Browse all <i class="bi bi-arrow-right"></i></a>
@@ -345,10 +249,10 @@
                     
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- CV + Update profile form -->
-        <div class="row g-3 g-xl-4 mb-2">
+        <!-- <div class="row g-3 g-xl-4 mb-2">
             <div class="col-xl-5 reveal" id="cv">
                 <div class="card-x">
                     <div class="card-x-head">
@@ -467,21 +371,18 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </main>
-
-    <footer class="footer">
-        <span>© <span id="year">2026</span> Jobs Portal. All rights reserved.</span>
-        <span>Member since </span>
-    </footer>
+     <?php include('./includes/seeker_footer.php');?>
+    
 </div>
 
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
+<!-- <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="appToast" class="toast toast-x" role="status" aria-live="polite">
         <div class="toast-body"><i class="bi bi-check-circle-fill"></i><span class="toast-msg">Saved</span>
             <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>
     </div>
-</div>
+</div> -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/script.js"></script>
