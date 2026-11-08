@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 04, 2026 at 04:00 PM
+-- Generation Time: Nov 08, 2026 at 03:50 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.36
 
@@ -29,8 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `categories` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -51,8 +51,8 @@ INSERT INTO `categories` (`id`, `name`, `slug`) VALUES
 
 CREATE TABLE `cities` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `division` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `division` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -75,11 +75,11 @@ CREATE TABLE `companies` (
   `id` int UNSIGNED NOT NULL,
   `user_id` int UNSIGNED NOT NULL,
   `city_id` int UNSIGNED DEFAULT NULL,
-  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
-  `description` text COLLATE utf8mb4_unicode_ci
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -98,11 +98,11 @@ INSERT INTO `companies` (`id`, `user_id`, `city_id`, `name`, `logo`, `website`, 
 
 CREATE TABLE `cv_templates` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `thumbnail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `layout_file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `thumbnail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `layout_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_premium` tinyint(1) NOT NULL DEFAULT '0',
-  `status` enum('active','inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active'
+  `status` enum('active','inactive') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -125,14 +125,14 @@ CREATE TABLE `jobs` (
   `category_id` int UNSIGNED DEFAULT NULL,
   `city_id` int UNSIGNED DEFAULT NULL,
   `subscription_id` int UNSIGNED DEFAULT NULL,
-  `title` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `job_type` enum('full_time','part_time','contract','internship','remote') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'full_time',
+  `title` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `job_type` enum('full_time','part_time','contract','internship','remote') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'full_time',
   `salary_min` decimal(10,2) DEFAULT NULL,
   `salary_max` decimal(10,2) DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `deadline` date NOT NULL,
-  `status` enum('pending','approved','rejected','closed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `status` enum('pending','approved','rejected','closed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `is_featured` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -159,8 +159,8 @@ CREATE TABLE `job_applications` (
   `id` int UNSIGNED NOT NULL,
   `job_id` int UNSIGNED NOT NULL,
   `seeker_id` int UNSIGNED NOT NULL,
-  `resume_file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('applied','viewed','shortlisted','interview','hired','rejected') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'applied',
+  `resume_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('applied','viewed','shortlisted','interview','hired','rejected') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'applied',
   `applied_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -213,7 +213,7 @@ INSERT INTO `job_skills` (`id`, `job_id`, `skill_id`) VALUES
 CREATE TABLE `notifications` (
   `id` int UNSIGNED NOT NULL,
   `user_id` int UNSIGNED NOT NULL,
-  `message` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -239,11 +239,11 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`
 
 CREATE TABLE `packages` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `duration_days` smallint UNSIGNED NOT NULL,
   `job_post_limit` smallint UNSIGNED NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -263,9 +263,9 @@ INSERT INTO `packages` (`id`, `name`, `price`, `duration_days`, `job_post_limit`
 
 CREATE TABLE `payment_methods` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `account_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('active','inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active'
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `account_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('active','inactive') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -288,13 +288,13 @@ INSERT INTO `payment_methods` (`id`, `name`, `account_no`, `status`) VALUES
 
 CREATE TABLE `payment_transactions` (
   `id` int UNSIGNED NOT NULL,
-  `transaction_no` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `transaction_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` int UNSIGNED NOT NULL,
   `subscription_id` int UNSIGNED NOT NULL,
   `payment_method_id` int UNSIGNED NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
-  `tx_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('pending','completed','failed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `tx_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('pending','completed','failed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `verified_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -339,11 +339,11 @@ CREATE TABLE `seekers` (
   `city_id` int UNSIGNED DEFAULT NULL,
   `category_id` int UNSIGNED DEFAULT NULL,
   `cv_template_id` int UNSIGNED DEFAULT NULL,
-  `headline` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `summary` text COLLATE utf8mb4_unicode_ci,
+  `headline` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `experience_years` tinyint UNSIGNED NOT NULL DEFAULT '0',
   `expected_salary` decimal(10,2) DEFAULT NULL,
-  `resume_file` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `resume_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -364,11 +364,11 @@ INSERT INTO `seekers` (`id`, `user_id`, `city_id`, `category_id`, `cv_template_i
 CREATE TABLE `seeker_cv_items` (
   `id` int UNSIGNED NOT NULL,
   `seeker_id` int UNSIGNED NOT NULL,
-  `type` enum('project','certificate','language') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `organization` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `level` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` enum('project','certificate','language') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `organization` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `level` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -391,10 +391,10 @@ INSERT INTO `seeker_cv_items` (`id`, `seeker_id`, `type`, `title`, `organization
 CREATE TABLE `seeker_educations` (
   `id` int UNSIGNED NOT NULL,
   `seeker_id` int UNSIGNED NOT NULL,
-  `level` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `degree_title` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `institution` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `result` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `level` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `degree_title` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `institution` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `result` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `year` year DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -416,8 +416,8 @@ INSERT INTO `seeker_educations` (`id`, `seeker_id`, `level`, `degree_title`, `in
 CREATE TABLE `seeker_experiences` (
   `id` int UNSIGNED NOT NULL,
   `seeker_id` int UNSIGNED NOT NULL,
-  `company_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `designation` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `designation` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date DEFAULT NULL,
   `is_current` tinyint(1) NOT NULL DEFAULT '0'
@@ -467,7 +467,7 @@ INSERT INTO `seeker_skills` (`id`, `seeker_id`, `skill_id`) VALUES
 
 CREATE TABLE `skills` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -496,7 +496,7 @@ CREATE TABLE `subscriptions` (
   `posts_left` smallint UNSIGNED NOT NULL DEFAULT '0',
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `status` enum('pending','active','expired') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending'
+  `status` enum('pending','active','expired') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -515,12 +515,12 @@ INSERT INTO `subscriptions` (`id`, `user_id`, `package_id`, `posts_left`, `start
 
 CREATE TABLE `users` (
   `id` int UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('admin','employer','seeker') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('active','pending','blocked') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('admin','employer','seeker') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('active','pending','blocked') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -529,10 +529,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `role`, `status`, `created_at`) VALUES
-(7, 'Site Admin', 'admin@jobportal.com', '01700000001', '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'admin', 'active', '2026-05-28 14:51:36'),
-(8, 'Karim Hossain', 'employer@jobportal.com', '01700000002', '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'employer', 'active', '2026-06-17 14:51:36'),
+(7, 'sumaia', 'admin@gmail.com', '01700000001', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'admin', 'active', '2026-05-28 14:51:36'),
+(8, 'Karim Hossain', 'employer@jobportal.com', '01700000002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-06-17 14:51:36'),
 (9, 'Sumon Das', 'employer2@jobportal.com', '01700000003', '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'employer', 'pending', '2026-10-15 14:51:36'),
-(10, 'Rahim Uddin', 'seeker@jobportal.com', '01700000004', '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'seeker', 'active', '2026-07-07 14:51:36'),
+(10, 'Rahim Uddin', 'seeker@jobportal.com', '01700000004', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'seeker', 'active', '2026-07-07 14:51:36'),
 (11, 'Nusrat Jahan', 'seeker2@jobportal.com', NULL, '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'seeker', 'active', '2026-08-21 14:51:36'),
 (12, 'Tanvir Ahmed', 'seeker3@jobportal.com', '01700000006', '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'seeker', 'active', '2026-10-30 14:51:36');
 
