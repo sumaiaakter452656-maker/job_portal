@@ -11,7 +11,10 @@
         <a href="#analytics" class="side-link"><i class="bi bi-graph-up-arrow"></i><span>Hiring Analytics</span></a>
 
         <div class="nav-section">Jobs</div>
-        <a href="#post-job" class="side-link"><i class="bi bi-plus-square"></i><span>Post a Job</span></a>
+        <!-- <a href="#post-job" class="side-link"><i class="bi bi-plus-square"></i><span>Post a Job</span></a> -->
+         <a href="jobs/index.php" class="side-link"><i class="bi bi-plus-square"></i><span>Post a Job</span></a>
+
+
         <a href="#my-jobs" class="side-link"><i class="bi bi-briefcase"></i><span>Manage Jobs</span>
             <em class="side-badge">128</em></a>
         <a href="#applicants" class="side-link"><i class="bi bi-people"></i><span>Applicants</span>

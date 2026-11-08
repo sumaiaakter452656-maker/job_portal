@@ -24,7 +24,8 @@
         <a href="#top-companies" class="side-link"><i class="bi bi-buildings"></i><span>Companies</span></a>
 
         <div class="nav-section">Master Data</div>
-        <a href="#quick-add" class="side-link"><i class="bi bi-tags"></i><span>Categories</span></a>
+        <!-- <a href="#quick-add" class="side-link"><i class="bi bi-tags"></i><span>Categories</span></a> -->
+         <a href="categories/index.php" class="side-link"><i class="bi bi-tags"></i><span>Categories</span></a>
         <a href="#quick-add" class="side-link"><i class="bi bi-geo-alt"></i><span>Cities</span></a>
         <a href="#" class="side-link"><i class="bi bi-lightning-charge"></i><span>Skills</span></a>
         <a href="#" class="side-link"><i class="bi bi-file-earmark-richtext"></i><span>CV Templates</span></a>
