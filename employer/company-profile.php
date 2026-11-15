@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Company Profile | ChakriHub</title>
+  <title>Company Profile | JobHub</title>
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="dash-body">
 <!-- ================= SIDEBAR (Employer) ================= -->
 <aside class="sidebar">
-  <a href="../index.html" class="logo"><span class="logo-mark">C</span>ChakriHub<span class="dot">.</span></a>
+  <a href="../index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
   <div class="sidebar-label">Employer menu</div>
   <ul class="sidebar-menu">
       <li><a href="../employer/dashboard.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
@@ -70,7 +70,7 @@
       </div>
     </form>
   </main>
-  <footer class="dash-footer">&copy; 2026 ChakriHub — Dashboard</footer>
+  <footer class="dash-footer">&copy; 2026 JobHub — Dashboard</footer>
 </div>
 <script src="../assets/js/main.js"></script>
 </body>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us | ChakriHub</title>
+  <title>Contact Us | JobHub</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -38,7 +38,7 @@
         <ul class="overview-list">
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><small>Office</small><strong>House 12, Road 5, Dhanmondi, Dhaka</strong></div></li>
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><div><small>Phone</small><strong>+880 1700-000000</strong></div></li>
-          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><div><small>Email</small><strong>support@chakrihub.test</strong></div></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><div><small>Email</small><strong>support@jobhub.test</strong></div></li>
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><small>Hours</small><strong>Sun – Thu, 9am – 6pm</strong></div></li>
         </ul>
       </div>
@@ -51,7 +51,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a href="index.html" class="logo"><span class="logo-mark">C</span>ChakriHub<span class="dot">.</span></a>
+        <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
         <p class="mt-2">Bangladesh's friendly job platform connecting talented people with great employers.</p>
       </div>
       <div>
@@ -80,7 +80,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; 2026 ChakriHub. All rights reserved.</span>
+      <span>&copy; 2026 JobHub. All rights reserved.</span>
       <span><a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></span>
     </div>
   </div>

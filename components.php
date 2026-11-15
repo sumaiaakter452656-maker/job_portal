@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UI Components | ChakriHub</title>
+  <title>UI Components | JobHub</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -140,7 +140,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a href="index.html" class="logo"><span class="logo-mark">C</span>ChakriHub<span class="dot">.</span></a>
+        <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
         <p class="mt-2">Bangladesh's friendly job platform connecting talented people with great employers.</p>
       </div>
       <div>
@@ -169,7 +169,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; 2026 ChakriHub. All rights reserved.</span>
+      <span>&copy; 2026 JobHub. All rights reserved.</span>
       <span><a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></span>
     </div>
   </div>

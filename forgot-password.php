@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forgot Password | ChakriHub</title>
+  <title>Forgot Password | JobHub</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="auth-body">
 
 <div class="auth-wrap">
   <aside class="auth-side">
-    <a href="index.html" class="logo"><span class="logo-mark">C</span>ChakriHub</a>
+    <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub</a>
     <div>
       <h2>Your next career move starts here.</h2>
       <ul>
@@ -19,7 +19,7 @@
         <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Track every application live</li>
       </ul>
     </div>
-    <p class="small mb-0">&copy; 2026 ChakriHub</p>
+    <p class="small mb-0">&copy; 2026 JobHub</p>
   </aside>
   <main class="auth-main">
     <div class="auth-card">
