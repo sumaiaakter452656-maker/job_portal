@@ -12,13 +12,13 @@
   <a href="../index.html" class="logo"><span class="logo-mark">C</span>ChakriHub<span class="dot">.</span></a>
   <div class="sidebar-label">Admin menu</div>
   <ul class="sidebar-menu">
-      <li><a href="../admin/dashboard.html" class="active"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
-      <li><a href="../admin/users.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</a></li>
+      <li><a href="../admin/dashboard.php" class="active"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+      <li><a href="../admin/users.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</a></li>
       <li><a href="../index.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>View Website</a></li>
   </ul>
   <div class="sidebar-foot">
     <ul class="sidebar-menu">
-      <li><a href="../login.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a></li>
+      <li><a href="../login.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a></li>
     </ul>
   </div>
 </aside>
@@ -40,7 +40,7 @@
         <a href="#"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
         <a href="#"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>Settings</a>
         <hr>
-        <a href="../login.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+        <a href="../login.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
       </div>
     </div>
   </header>
@@ -52,7 +52,7 @@
           <div><h3>3,412</h3><p>Employers</p><span class="stat-trend up">+2% this month</span></div></div><div class="stat-card"><div class="stat-icon amber"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
           <div><h3>12,086</h3><p>Live jobs</p><span class="stat-trend up">+7% this month</span></div></div><div class="stat-card"><div class="stat-icon rose"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div><h3>214k</h3><p>Applications</p><span class="stat-trend up">+11% this month</span></div></div></div>
-    <div class="dash-grid">
+    <!-- <div class="dash-grid">
       <div class="card">
         <div class="card-header"><h3>Jobs waiting for approval</h3><span class="badge badge-warning">5 pending</span></div>
         <div class="table-wrap">
@@ -89,7 +89,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><h3>New users</h3><a href="../admin/users.html" class="btn btn-sm btn-light">All users</a></div>
+        <div class="card-header"><h3>New users</h3><a href="../admin/users.php" class="btn btn-sm btn-light">All users</a></div>
         <div class="card-body">
           <div class="list-item"><span class="avatar sm" style="background:#0f766e">RU</span><div class="list-item-body"><strong>Rahim Uddin</strong><small>Joined 1 day ago</small></div><span class="badge badge-primary">Job Seeker</span></div>
           <div class="list-item"><span class="avatar sm" style="background:#7c3aed">NJ</span><div class="list-item-body"><strong>Nusrat Jahan</strong><small>Joined 2 days ago</small></div><span class="badge badge-info">Employer</span></div>
@@ -98,7 +98,7 @@
           <div class="list-item"><span class="avatar sm" style="background:#2563eb">SH</span><div class="list-item-body"><strong>Sabbir Hossain</strong><small>Joined 5 days ago</small></div><span class="badge badge-primary">Job Seeker</span></div>
         </div>
       </div>
-    </div>
+    </div> -->
   </main>
   <footer class="dash-footer">&copy; 2026 ChakriHub — Dashboard</footer>
 </div>

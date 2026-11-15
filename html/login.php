@@ -1,3 +1,4 @@
+<?php include('dbconfig.php') ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +24,50 @@
   </aside>
   <main class="auth-main">
     <div class="auth-card">
+
+    
+        <?php
+              if (isset($_POST['login'])) {
+                extract($_POST);
+                $password = sha1($password);
+
+               
+                echo "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
+                $result = $conn->query("SELECT * FROM users WHERE email = '$email' AND password = '$password'");
+
+                $row = $result->fetch_assoc();
+
+
+                if ($result->num_rows > 0) {
+                  session_start();
+                  $_SESSION['email'] = $email;
+                  $_SESSION['name'] = $row['name'];
+                  $_SESSION['role'] = $row['role'];
+
+
+                  if ($row['role'] == 'admin') {
+                    $_SESSION['url'] = 'dashboard.php';
+                    header("Location: admin/dashboard.php");
+                  } else if ($row['role'] == 'employer') {
+                    $_SESSION['url'] = 'dashboard.php';
+                    header("Location: employer/dashboard.php");
+                  } else if ($row['role'] == 'seeker') {
+                    $_SESSION['url'] = 'dashboard.php';
+                    header("Location: seeker/dashboard.php");
+                  }
+                } else {
+                  echo '
+                  <div class="alert border-0 bg-danger-subtle alert-dismissible fade show">
+                  <div class="d-flex align-items-center">
+                    <div class="text-danger">Problem Login</div>
+                  </div>
+                  </div>
+                  ';
+                }
+              }
+              ?>
+
+
 
       <h1>Welcome back</h1>
       <p class="sub">Log in to continue to your dashboard.</p>

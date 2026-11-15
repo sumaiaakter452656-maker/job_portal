@@ -1,0 +1,1 @@
+<footer class="dash-footer">&copy; 2026 ChakriHub — Dashboard</footer>
