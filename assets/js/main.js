@@ -1,5 +1,5 @@
 /* =========================================================
-   ChakriHub — Job Portal Template
+   JobHub — Job Portal Template
    main.js : small UI helpers (no library needed)
    ========================================================= */
 document.addEventListener('DOMContentLoaded', function () {
