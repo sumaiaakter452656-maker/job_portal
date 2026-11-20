@@ -40,7 +40,7 @@
         <div class="nav-section">System</div>
         <a href="#" class="side-link"><i class="bi bi-bell"></i><span>Notifications</span></a>
         <a href="#" class="side-link"><i class="bi bi-gear"></i><span>Settings</span></a>
-        <a href="../index.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
+        <a href="../index.php" class="side-link"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
     </nav>
 
     <div class="sidebar-footer">

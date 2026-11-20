@@ -49,7 +49,7 @@
                     <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
                     <li><a class="dropdown-item" href="#"><i class="bi bi-key"></i> Change Password</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="../index.html"><i class="bi bi-box-arrow-right text-danger"></i> Logout</a></li>
+                    <li><a class="dropdown-item text-danger" href="../index.php"><i class="bi bi-box-arrow-right text-danger"></i> Logout</a></li>
                 </ul>
             </div>
         </div>

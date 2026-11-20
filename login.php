@@ -1,4 +1,40 @@
-<?php include('dbconfig.php') ?>
+<?php
+session_start();
+include('dbconfig.php');
+
+$error = '';
+
+if (isset($_POST['login'])) {
+  $email = $conn->real_escape_string($_POST['email']);
+  $password = sha1($_POST['password']);
+
+  $result = $conn->query("SELECT * FROM users WHERE email = '$email' AND password = '$password'");
+  $row = $result->fetch_assoc();
+
+  if ($result->num_rows > 0) {
+    // Session-এ user-এর তথ্য রাখা। অন্য পেজ এগুলো দিয়ে বোঝে কে login করেছে।
+    $_SESSION['user_id'] = $row['id'];
+    $_SESSION['email']   = $row['email'];
+    $_SESSION['name']    = $row['name'];
+    $_SESSION['role']    = $row['role'];
+
+    // ?next= থাকলে (যেমন Apply/Save করতে এসে login) seeker-কে সেই পেজে ফেরত পাঠাই
+    $next = isset($_GET['next']) ? $_GET['next'] : '';
+    if ($row['role'] == 'seeker' && $next != '' && strpos($next, '://') === false && substr($next, 0, 2) != '//') {
+      header("Location: " . $next);
+    } else if ($row['role'] == 'admin') {
+      header("Location: admin/dashboard.php");
+    } else if ($row['role'] == 'employer') {
+      header("Location: employer/dashboard.php");
+    } else {
+      header("Location: seeker/dashboard.php");
+    }
+    exit;
+  } else {
+    $error = 'Wrong email or password';
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,14 +42,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log in | JobHub</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 
 <body class="auth-body">
 
   <div class="auth-wrap">
     <aside class="auth-side">
-      <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub</a>
+      <a href="index.php" class="logo"><span class="logo-mark">J</span>JobHub</a>
       <div>
         <h2>Your next career move starts here.</h2>
         <ul>
@@ -34,48 +70,15 @@
       <div class="auth-card">
 
 
-        <?php
-        if (isset($_POST['login'])) {
-          extract($_POST);
-          $password = sha1($password);
-
-
-          // echo "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
-
-
-          $result = $conn->query("SELECT * FROM users WHERE email = '$email' AND password = '$password'");
-
-          $row = $result->fetch_assoc();
-
-
-          if ($result->num_rows > 0) {
-            session_start();
-            $_SESSION['email'] = $email;
-            $_SESSION['name'] = $row['name'];
-            $_SESSION['role'] = $row['role'];
-
-
-            if ($row['role'] == 'admin') {
-              $_SESSION['url'] = 'dashboard.php';
-              header("Location: admin/dashboard.php");
-            } else if ($row['role'] == 'employer') {
-              $_SESSION['url'] = 'dashboard.php';
-              header("Location: employer/dashboard.php");
-            } else if ($row['role'] == 'seeker') {
-              $_SESSION['url'] = 'dashboard.php';
-              header("Location: seeker/dashboard.php");
-            }
-          } else {
-            echo '
-            <div class="alert border-0 bg-danger-subtle alert-dismissible fade show">
-            <div class="d-flex align-items-center">
-              <div class="text-danger">Problem Login</div>
-            </div>
-            </div>
-            ';
-          }
-        }
-        ?>
+        <?php if (isset($_GET['next'])) { ?>
+          <div class="alert alert-info"><span>Please log in as a job seeker to continue.</span></div>
+        <?php } ?>
+        <?php if (isset($_GET['registered'])) { ?>
+          <div class="alert alert-success"><span>Account created! Now log in with your email and password.</span></div>
+        <?php } ?>
+        <?php if ($error != '') { ?>
+          <div class="alert alert-danger"><span><?php echo $error; ?></span></div>
+        <?php } ?>
 
 
 
@@ -101,12 +104,12 @@
           <button class="btn btn-primary btn-block btn-lg" name="login" type="submit">Log in</button>
         </form>
         <p class="auth-foot">Don't have an account? <a href="register.php">Create one</a></p>
-        <div class="or-divider">Preview dashboards</div>
-        <div class="flex gap-1 wrap" style="justify-content:center">
+        <!-- <div class="or-divider">Preview dashboards</div>
+         <div class="flex gap-1 wrap" style="justify-content:center">
           <a class="btn btn-sm btn-light" href="seeker/dashboard.php">Job Seeker</a>
           <a class="btn btn-sm btn-light" href="employer/dashboard.php">Employer</a>
           <a class="btn btn-sm btn-light" href="admin/dashboard.php">Admin</a>
-        </div>
+        </div>  -->
       </div>
     </main>
   </div>

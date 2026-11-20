@@ -541,3 +541,61 @@ select.form-control { appearance: none; padding-right: 36px;
   .user-meta { display: none; }
   .hero-stats { gap: 28px; }
 }
+
+
+/* =========================================================
+   THEME: Ocean Blue & Sun
+   পুরনো রঙে ফিরতে চাইলে এই অংশটা (ফাইলের শেষ পর্যন্ত) মুছে দিন
+   ========================================================= */
+:root {
+  --primary: #0284c7;
+  --primary-dark: #075985;
+  --primary-light: #e0f2fe;
+  --accent: #facc15;
+  --bg: #f0f9ff;
+}
+/* Hero: রঙিন gradient, সাদা লেখা */
+.hero { background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 60%, #06b6d4 100%); border-bottom: 0; color: #fff; }
+.hero h1, .hero .lead, .hero-stats strong { color: #fff; }
+.hero .lead, .hero-stats span, .hero .popular { color: rgba(255,255,255,.85); }
+.hero h1 .hl { color: #facc15; }
+.hero .eyebrow { background: rgba(255,255,255,.18); color: #fff; }
+.hero .search-bar { box-shadow: 0 20px 50px rgba(0,0,0,.25); }
+/* Page header (Jobs, Companies...) */
+.page-header { background: linear-gradient(135deg, #0c4a6e, #0284c7); color: #fff; border-bottom: 0; }
+.page-header h1, .page-header .breadcrumb li, .page-header .breadcrumb a, .page-header .muted, .page-header p { color: #fff !important; }
+.page-header .job-meta span { color: rgba(255,255,255,.9); }
+/* Buttons */
+.btn-primary { background: linear-gradient(135deg, #0284c7, #0284c7); border: 0; }
+.btn-primary:hover { background: linear-gradient(135deg, #075985, #0284c7); }
+.btn-accent { background: #facc15; color: #fff; }
+/* Navbar */
+.navbar { border-bottom: 3px solid #0284c7; }
+.logo-mark { background: linear-gradient(135deg, #0284c7, #facc15); }
+/* Category card: প্রতিটায় আলাদা রং */
+.category-card { border-left: 4px solid #0284c7; }
+.grid-4 > .category-card:nth-child(4n+1) .category-icon { background: #ede9fe; color: #7c3aed; }
+.grid-4 > .category-card:nth-child(4n+2) .category-icon { background: #ffedd5; color: #ea580c; }
+.grid-4 > .category-card:nth-child(4n+3) .category-icon { background: #dcfce7; color: #16a34a; }
+.grid-4 > .category-card:nth-child(4n+4) .category-icon { background: #dbeafe; color: #2563eb; }
+.grid-4 > .category-card:nth-child(4n+2) { border-left-color: #ea580c; }
+.grid-4 > .category-card:nth-child(4n+3) { border-left-color: #16a34a; }
+.grid-4 > .category-card:nth-child(4n+4) { border-left-color: #2563eb; }
+/* Job card */
+.job-card { border-top: 4px solid transparent; }
+.job-card:hover { border-top-color: #facc15; transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.badge-primary { background: #e0f2fe; color: #075985; }
+/* Section tint */
+.section:not(.bg-white) { background: #f0f9ff; }
+.cta-band { background: linear-gradient(135deg, #0c4a6e, #06b6d4); }
+.step-num { background: linear-gradient(135deg, #0284c7, #facc15); color: #fff; }
+/* Dashboard sidebar */
+.sidebar { background: linear-gradient(180deg, #082f49 0%, #04172a 100%); }
+.sidebar-menu a.active { background: #facc15; color: #082f49; }
+.sidebar-menu a.active .ic { color: #082f49; }
+.stat-card { border-top: 4px solid #0284c7; }
+.footer { background: #04172a; }
+/* Login / Register বাঁ দিকের অংশ */
+.auth-side { background: linear-gradient(150deg, #0c4a6e 0%, #0284c7 60%, #06b6d4 100%); color: #e0f2fe; }
+/* Logo না থাকলে নামের অক্ষরের বক্স (ছবির logo-তে লাগবে না) */
+div.company-logo, span.company-logo { background: linear-gradient(135deg, #0284c7, #06b6d4) !important; }

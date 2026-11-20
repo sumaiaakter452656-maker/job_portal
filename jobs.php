@@ -1,51 +1,148 @@
+<?php
+session_start();
+include('dbconfig.php');
+
+// ===== ১. Form থেকে আসা filter গুলো নেওয়া =====
+$q        = isset($_GET['q']) ? $conn->real_escape_string($_GET['q']) : '';
+$city     = isset($_GET['city']) ? (int)$_GET['city'] : 0;
+$category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
+$type     = isset($_GET['type']) ? $_GET['type'] : '';
+$min      = isset($_GET['min']) ? (int)$_GET['min'] : 0;
+$max      = isset($_GET['max']) ? (int)$_GET['max'] : 0;
+$sort     = isset($_GET['sort']) ? $_GET['sort'] : 'new';
+
+// ===== ২. WHERE অংশ বানানো =====
+$where = "WHERE jobs.status = 'approved' AND jobs.deadline >= CURDATE()";
+
+if ($q != '') {
+  $where .= " AND (jobs.title LIKE '%$q%' OR jobs.description LIKE '%$q%' OR companies.name LIKE '%$q%')";
+}
+if ($city > 0) {
+  $where .= " AND jobs.city_id = $city";
+}
+if ($category > 0) {
+  $where .= " AND jobs.category_id = $category";
+}
+// job_type শুধু এই ৫টার একটা হতে পারবে
+$allTypes = array('full_time', 'part_time', 'contract', 'internship', 'remote');
+if (in_array($type, $allTypes)) {
+  $where .= " AND jobs.job_type = '$type'";
+}
+if ($min > 0) {
+  $where .= " AND jobs.salary_max >= $min";
+}
+if ($max > 0) {
+  $where .= " AND jobs.salary_min <= $max";
+}
+
+// ===== ৩. Sorting =====
+if ($sort == 'salary_high') {
+  $order = "ORDER BY jobs.salary_max DESC";
+} else if ($sort == 'salary_low') {
+  $order = "ORDER BY jobs.salary_min ASC";
+} else if ($sort == 'deadline') {
+  $order = "ORDER BY jobs.deadline ASC";
+} else {
+  $order = "ORDER BY jobs.is_featured DESC, jobs.id DESC";
+}
+
+// ===== ৪. Pagination =====
+$perPage = 6;
+$pageNo  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($pageNo < 1) $pageNo = 1;
+$offset  = ($pageNo - 1) * $perPage;
+
+$from = "FROM jobs
+         JOIN companies ON companies.id = jobs.company_id
+         LEFT JOIN cities ON cities.id = jobs.city_id
+         LEFT JOIN categories ON categories.id = jobs.category_id";
+
+// মোট কয়টা job পাওয়া গেল
+$total = $conn->query("SELECT COUNT(*) AS c $from $where")->fetch_assoc()['c'];
+$totalPages = ceil($total / $perPage);
+
+// এই পেজের job গুলো
+$jobs = $conn->query("SELECT jobs.*, companies.name AS company_name, companies.logo,
+                             cities.name AS city_name, categories.name AS category_name
+                      $from $where $order LIMIT $offset, $perPage");
+
+// Filter dropdown-এর জন্য
+$cities     = $conn->query("SELECT * FROM cities ORDER BY name");
+$categories = $conn->query("SELECT * FROM categories ORDER BY name");
+
+// Pagination link-এ বাকি filter গুলো রেখে দেওয়ার জন্য
+$params = $_GET;
+unset($params['page']);
+$link = 'jobs.php?' . http_build_query($params) . '&page=';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find Jobs | JobHub</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
-<!-- ================= NAVBAR ================= -->
 <?php include('navber.php'); ?>
-
 <main>
 
 <section class="page-header">
   <div class="container">
-    <ul class="breadcrumb"><li><a href="index.html">Home</a></li><li>Jobs</li></ul>
+    <ul class="breadcrumb"><li><a href="index.php">Home</a></li><li>Jobs</li></ul>
     <h1>Find Jobs</h1><p class="muted mb-0 mt-1">Showing the latest openings from verified employers</p>
   </div>
 </section>
+
 <section class="section-sm">
   <div class="container listing-layout">
     <!-- FILTERS -->
     <aside class="card filter-box">
-      <form class="card-body" action="" method="get">
+      <form class="card-body" action="jobs.php" method="get">
         <div class="filter-group">
           <h4>Keyword</h4>
-          <div class="input-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" name="q" class="form-control" placeholder="Title or skill"></div>
+          <div class="input-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" name="q" class="form-control" placeholder="Title, skill or company" value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>"></div>
         </div>
         <div class="filter-group">
           <h4>Location</h4>
-          <select class="form-control" name="location"><option>All locations</option><option>Dhaka</option><option>Chattogram</option><option>Sylhet</option><option>Remote</option></select>
+          <select class="form-control" name="city">
+            <option value="">All locations</option>
+            <?php while ($c = $cities->fetch_assoc()) { ?>
+              <option value="<?php echo $c['id']; ?>" <?php if ($city == $c['id']) echo 'selected'; ?>><?php echo $c['name']; ?></option>
+            <?php } ?>
+          </select>
         </div>
         <div class="filter-group">
           <h4>Category</h4>
-          <select class="form-control" name="category"><option>All categories</option><option>IT &amp; Software</option><option>Marketing</option><option>Design</option><option>Finance</option></select>
+          <select class="form-control" name="category">
+            <option value="">All categories</option>
+            <?php while ($cat = $categories->fetch_assoc()) { ?>
+              <option value="<?php echo $cat['id']; ?>" <?php if ($category == $cat['id']) echo 'selected'; ?>><?php echo $cat['name']; ?></option>
+            <?php } ?>
+          </select>
         </div>
         <div class="filter-group">
           <h4>Job Type</h4>
-          <label class="check"><input type="checkbox" name="type" checked> Full-time<span class="count">142</span></label><label class="check"><input type="checkbox" name="type"> Part-time<span class="count">38</span></label><label class="check"><input type="checkbox" name="type"> Remote<span class="count">64</span></label><label class="check"><input type="checkbox" name="type"> Contract<span class="count">21</span></label><label class="check"><input type="checkbox" name="type"> Internship<span class="count">17</span></label>
-        </div>
-        <div class="filter-group">
-          <h4>Experience</h4>
-          <label class="check"><input type="radio" name="exp"> Fresher<span class="count">52</span></label><label class="check"><input type="radio" name="exp" checked> 1 – 3 years<span class="count">96</span></label><label class="check"><input type="radio" name="exp"> 3 – 5 years<span class="count">61</span></label><label class="check"><input type="radio" name="exp"> 5+ years<span class="count">39</span></label>
+          <label class="check"><input type="radio" name="type" value="" <?php if ($type == '') echo 'checked'; ?>> Any</label>
+          <?php foreach ($allTypes as $t) { ?>
+            <label class="check"><input type="radio" name="type" value="<?php echo $t; ?>" <?php if ($type == $t) echo 'checked'; ?>> <?php echo ucwords(str_replace('_', ' ', $t)); ?></label>
+          <?php } ?>
         </div>
         <div class="filter-group">
           <h4>Salary (BDT / month)</h4>
-          <div class="form-row"><input class="form-control" type="number" name="min" placeholder="Min"><input class="form-control" type="number" name="max" placeholder="Max"></div>
+          <div class="form-row">
+            <input class="form-control" type="number" name="min" placeholder="Min" value="<?php if ($min) echo $min; ?>">
+            <input class="form-control" type="number" name="max" placeholder="Max" value="<?php if ($max) echo $max; ?>">
+          </div>
+        </div>
+        <div class="filter-group">
+          <h4>Sort by</h4>
+          <select class="form-control" name="sort">
+            <option value="new" <?php if ($sort == 'new') echo 'selected'; ?>>Newest first</option>
+            <option value="salary_high" <?php if ($sort == 'salary_high') echo 'selected'; ?>>Salary: high to low</option>
+            <option value="salary_low" <?php if ($sort == 'salary_low') echo 'selected'; ?>>Salary: low to high</option>
+            <option value="deadline" <?php if ($sort == 'deadline') echo 'selected'; ?>>Deadline: soonest</option>
+          </select>
         </div>
         <button class="btn btn-primary btn-block" type="submit">Apply Filters</button>
         <a href="jobs.php" class="btn btn-ghost btn-block mt-1">Reset</a>
@@ -55,199 +152,41 @@
     <!-- RESULTS -->
     <div>
       <div class="listing-toolbar">
-        <p class="mb-0">Showing <strong>1–8</strong> of <strong>248</strong> jobs</p>
-        <select class="form-control" name="sort"><option>Newest first</option><option>Salary: high to low</option><option>Salary: low to high</option></select>
+        <p class="mb-0">Found <strong><?php echo $total; ?></strong> jobs</p>
       </div>
+
       <div class="job-list">
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#0f766e">TV</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Senior PHP Developer</a></h3>
-            <p class="muted">TechVerse Ltd.</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Dhaka</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳80k – 120k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 days ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-primary">Full-time</span><span class="tag">PHP</span><span class="tag">Laravel</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
+        <?php
+        if ($total == 0) {
+          echo '<div class="card"><div class="card-body">No jobs found. Try another search.</div></div>';
+        }
+        while ($row = $jobs->fetch_assoc()) {
+          include('job-card.php');
+        }
+        ?>
       </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#7c3aed">PB</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Frontend Developer (React)</a></h3>
-            <p class="muted">Pixel Bay</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Remote</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳60k – 90k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5 hours ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-info">Remote</span><span class="tag">React</span><span class="tag">JavaScript</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#ea580c">SB</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Digital Marketing Executive</a></h3>
-            <p class="muted">Shoply BD</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Chattogram</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳35k – 50k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>1 day ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-primary">Full-time</span><span class="tag">SEO</span><span class="tag">Facebook Ads</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#db2777">NS</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">UI/UX Designer</a></h3>
-            <p class="muted">Nimbus Studio</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Dhaka</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳50k – 70k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>3 days ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-warning">Contract</span><span class="tag">Figma</span><span class="tag">Prototyping</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#2563eb">MG</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Accounts Officer</a></h3>
-            <p class="muted">Meghna Group</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Narayanganj</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳30k – 45k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>4 days ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-primary">Full-time</span><span class="tag">Tally</span><span class="tag">Excel</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#dc2626">PE</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Customer Support Intern</a></h3>
-            <p class="muted">Pathao Express</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Sylhet</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳12k / month</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Just now</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-success">Internship</span><span class="tag">Communication</span><span class="tag">CRM</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#0891b2">CC</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Laravel Backend Engineer</a></h3>
-            <p class="muted">CodeCraft</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Dhaka</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳90k – 140k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>6 days ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-primary">Full-time</span><span class="tag">Laravel</span><span class="tag">REST API</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-card-head">
-          <div class="company-logo" style="background:#65a30d">BR</div>
-          <div class="job-card-info">
-            <h3><a href="job-details.php">Graphic Designer</a></h3>
-            <p class="muted">Brandly</p>
-          </div>
-          <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        </div>
-        <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Khulna</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳20k – 30k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>1 week ago</span>
-        </div>
-        <div class="job-card-foot">
-          <div class="tags"><span class="badge badge-gray">Part-time</span><span class="tag">Photoshop</span><span class="tag">Illustrator</span></div>
-          <a class="btn btn-sm btn-outline" href="job-details.php">Apply Now</a>
-        </div>
-      </div>
-      </div>
+
+      <?php if ($totalPages > 1) { ?>
       <ul class="pagination">
-        <li><span class="disabled">&laquo;</span></li>
-        <li><span class="active">1</span></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><span>…</span></li>
-        <li><a href="#">31</a></li>
-        <li><a href="#">&raquo;</a></li>
+        <?php if ($pageNo > 1) { ?>
+          <li><a href="<?php echo $link . ($pageNo - 1); ?>">&laquo;</a></li>
+        <?php } ?>
+
+        <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
+          <?php if ($i == $pageNo) { ?>
+            <li><span class="active"><?php echo $i; ?></span></li>
+          <?php } else { ?>
+            <li><a href="<?php echo $link . $i; ?>"><?php echo $i; ?></a></li>
+          <?php } ?>
+        <?php } ?>
+
+        <?php if ($pageNo < $totalPages) { ?>
+          <li><a href="<?php echo $link . ($pageNo + 1); ?>">&raquo;</a></li>
+        <?php } ?>
       </ul>
+      <?php } ?>
     </div>
   </div>
 </section>
 </main>
-<!-- ================= FOOTER ================= -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
-        <p class="mt-2">Bangladesh's friendly job platform connecting talented people with great employers.</p>
-      </div>
-      <div>
-        <h4>For Job Seekers</h4>
-        <ul>
-          <li><a href="jobs.php">Browse Jobs</a></li>
-          <li><a href="register.php">Create Account</a></li>
-          <li><a href="seeker/dashboard.php">My Dashboard</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>For Employers</h4>
-        <ul>
-          <li><a href="employer/post-job.php">Post a Job</a></li>
-          <li><a href="employer/applicants.php">Applicants</a></li>
-          <li><a href="employer/dashboard.php">Employer Dashboard</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Newsletter</h4>
-        <p>Get new jobs in your inbox every week.</p>
-        <form class="newsletter" action="#" method="post">
-          <input type="email" class="form-control" placeholder="Your email" required>
-          <button class="btn btn-primary" type="submit">Join</button>
-        </form>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 JobHub. All rights reserved.</span>
-      <span><a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></span>
-    </div>
-  </div>
-</footer>
-<script src="assets/js/main.js"></script>
-</body>
-</html>
+<?php include('footer.php'); ?>

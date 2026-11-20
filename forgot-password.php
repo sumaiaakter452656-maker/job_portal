@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forgot Password | JobHub</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body class="auth-body">
 
 <div class="auth-wrap">
   <aside class="auth-side">
-    <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub</a>
+    <a href="index.php" class="logo"><span class="logo-mark">J</span>JobHub</a>
     <div>
       <h2>Your next career move starts here.</h2>
       <ul>

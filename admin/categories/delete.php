@@ -1,14 +1,10 @@
 <?php
-include ('./dbconfig.php');
+include('../include/check.php');
+include('../../dbconfig.php');
 
-// Database Connection
-
-$id = $_GET['id'];
+$id = (int)$_GET['id'];
 
 $conn->query("DELETE FROM categories WHERE id = '$id'");
 
-if($conn->affected_rows){
-    header("Location: index.php");
-}
-
-?>
+header("Location: index.php");
+exit;

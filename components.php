@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UI Components | JobHub</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
 <!-- ================= NAVBAR ================= -->
@@ -13,7 +13,7 @@
 
 <section class="page-header">
   <div class="container">
-    <ul class="breadcrumb"><li><a href="index.html">Home</a></li><li>UI Kit</li></ul>
+    <ul class="breadcrumb"><li><a href="index.php">Home</a></li><li>UI Kit</li></ul>
     <h1>UI Components</h1><p class="muted mb-0 mt-1">Every reusable piece used in this template — copy what you need</p>
   </div>
 </section>
@@ -140,7 +140,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
+        <a href="index.php" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
         <p class="mt-2">Bangladesh's friendly job platform connecting talented people with great employers.</p>
       </div>
       <div>

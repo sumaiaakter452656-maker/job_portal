@@ -1,81 +1,29 @@
+<?php
+// Admin sidebar। সব admin পেজ এই ফাইলটা include করে।
+// $base দিয়ে ঠিক করা হয় পেজটা admin/ নাকি admin/categories/ ফোল্ডারে আছে
+$adminPage = basename($_SERVER['PHP_SELF']);
+$inSub = basename(dirname($_SERVER['PHP_SELF'])) != 'admin';
+$base = $inSub ? '../' : '';
+?>
 <aside class="sidebar">
-  <a href="../index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
+  <a href="<?php echo $base; ?>../index.php" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
   <div class="sidebar-label">Admin menu</div>
   <ul class="sidebar-menu">
-      <li><a href="../admin/dashboard.php" class="active"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
-
-
-         <a href="categories/index.php" class="side-link"><i class="bi bi-tags"></i><span>Categories</span></a>
-        <a href="#quick-add" class="side-link"><i class="bi bi-geo-alt"></i><span>Cities</span></a>
-        <a href="#" class="side-link"><i class="bi bi-lightning-charge"></i><span>Skills</span></a>
-        <a href="#" class="side-link"><i class="bi bi-file-earmark-richtext"></i><span>CV Templates</span></a>
-
-    <div class="nav-section">Job Management</div>
-    <a href="#recent-jobs" class="side-link"><i class="bi bi-briefcase"></i><span>All Jobs</span></a>
-    <a href="#recent-jobs" class="side-link"><i class="bi bi-hourglass-split"></i><span>Pending Approval</span>
-
-
-
-      <li><a href="../admin/users.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</a></li>
-
-     <div class="nav-section">Users</div>
-        <a href="#recent-users" class="side-link"><i class="bi bi-people"></i><span>Job Seekers</span></a>
-        <a href="#recent-users" class="side-link"><i class="bi bi-person-badge"></i><span>Employers</span> 
-        <a href="#top-companies" class="side-link"><i class="bi bi-buildings"></i><span>Companies</span></a>
-
-      <li><a href="../index.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>View Website</a></li>
+    <li><a href="<?php echo $base; ?>dashboard.php" class="<?php if ($adminPage == 'dashboard.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</a></li>
+    <li><a href="<?php echo $base; ?>users.php" class="<?php if ($adminPage == 'users.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Users</a></li>
+    <li><a href="<?php echo $base; ?>jobs.php" class="<?php if ($adminPage == 'jobs.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Jobs</a></li>
+    <li><a href="<?php echo $base; ?>companies.php" class="<?php if ($adminPage == 'companies.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="15" y2="6"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/></svg> Companies</a></li>
+    <li><a href="<?php echo $base; ?>applications.php" class="<?php if ($adminPage == 'applications.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Applicants</a></li>
+    <li><a href="<?php echo $base; ?>payments.php" class="<?php if ($adminPage == 'payments.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Payments</a></li>
+    <li><a href="<?php echo $base; ?>categories/index.php" class="<?php if ($inSub) echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg> Categories</a></li>
+    <li><a href="<?php echo $base; ?>../index.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg> View Website</a></li>
   </ul>
   <div class="sidebar-foot">
     <ul class="sidebar-menu">
-      <li><a href="../login.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a></li>
+      <li><a href="<?php echo $base; ?>../logout.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a></li>
     </ul>
   </div>
 </aside>
 <div class="sidebar-backdrop"></div>
 
 <div class="dash-main">
-
-
-    <!-- <div class="sidebar-brand">
-        <div class="brand-icon"><i class="bi bi-briefcase-fill"></i></div>
-        <div class="brand-text">Jobs<span>Portal</span><small class="brand-role">Admin Panel</small></div>
-        <button class="btn btn-sm text-white ms-auto d-lg-none" id="sidebarClose" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
-    </div>
-
-    <nav class="sidebar-menu">
-        <div class="nav-section">Main</div>
-        <a href="admin_dashboard.html" class="side-link active"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
-        <a href="#analytics" class="side-link"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-
-        >
-            <em class="side-badge">12</em></a>
-        <a href="#" class="side-link"><i class="bi bi-star"></i><span>Featured Jobs</span></a>
-        <a href="#" class="side-link"><i class="bi bi-file-earmark-person"></i><span>Applications</span></a>
-
-       
-
-        <div class="nav-section">Master Data</div>
-       //
-
-        <div class="nav-section">Billing</div>
-        <a href="#packages" class="side-link"><i class="bi bi-box-seam"></i><span>Packages</span></a>
-        <a href="#" class="side-link"><i class="bi bi-arrow-repeat"></i><span>Subscriptions</span></a>
-        <a href="#payments" class="side-link"><i class="bi bi-credit-card"></i><span>Payments</span>
-            <em class="side-badge">3</em></a>
-        <a href="#" class="side-link"><i class="bi bi-wallet2"></i><span>Payment Methods</span></a>
-
-        <div class="nav-section">System</div>
-        <a href="#" class="side-link"><i class="bi bi-bell"></i><span>Notifications</span></a>
-        <a href="#" class="side-link"><i class="bi bi-gear"></i><span>Settings</span></a>
-        <a href="../index.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
-    </nav>
-
-    <div class="sidebar-footer">
-        <div class="upgrade-box">
-            <h6><i class="bi bi-shield-check me-1"></i> Admin Tips</h6>
-            <p>12 job(s) &amp; 3 payment(s) are waiting for your review.</p>
-            <a href="#recent-jobs" class="btn btn-light btn-sm w-100">Review Now</a>
-        </div>
-    </div>
-</aside>
-<div class="sidebar-overlay"></div> -->

@@ -1,69 +1,195 @@
+<?php
+session_start();
+include('dbconfig.php');
+
+// URL থেকে job id নেওয়া (int করলে কেউ উল্টাপাল্টা কিছু পাঠাতে পারবে না)
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+$result = $conn->query("SELECT jobs.*, companies.id AS company_id, companies.name AS company_name,
+                               companies.logo, companies.user_id AS employer_user, companies.address, companies.website, companies.description AS company_desc,
+                               cities.name AS city_name, categories.name AS category_name
+                        FROM jobs
+                        JOIN companies ON companies.id = jobs.company_id
+                        LEFT JOIN cities ON cities.id = jobs.city_id
+                        LEFT JOIN categories ON categories.id = jobs.category_id
+                        WHERE jobs.id = $id AND jobs.status = 'approved' AND jobs.deadline >= CURDATE()");
+
+$job = $result->fetch_assoc();
+
+// Job না পেলে (বা deadline পার হয়ে গেলে) Jobs পেজে ফেরত
+if (!$job) {
+  header("Location: jobs.php");
+  exit;
+}
+
+// ===== Seeker হিসেবে login করা থাকলে: apply/save অবস্থা =====
+$isSeeker = isset($_SESSION['role']) && $_SESSION['role'] == 'seeker';
+$applied  = null;    // আগে apply করে থাকলে সেই application
+$isSaved  = false;
+$applyError = '';
+if ($isSeeker) {
+  $uid = (int)$_SESSION['user_id'];
+  $seeker = $conn->query("SELECT * FROM seekers WHERE user_id = $uid")->fetch_assoc();
+  $seekerId = (int)$seeker['id'];
+  $applied = $conn->query("SELECT * FROM job_applications WHERE job_id = $id AND seeker_id = $seekerId")->fetch_assoc();
+  $isSaved = $conn->query("SELECT id FROM saved_jobs WHERE job_id = $id AND seeker_id = $seekerId")->num_rows > 0;
+}
+
+// ===== Apply form submit =====
+if (isset($_POST['apply'])) {
+  if (!$isSeeker) {
+    header("Location: login.php?next=" . urlencode('job-details.php?id=' . $id));
+    exit;
+  }
+  if (!$applied) {
+    $resume = '';
+
+    // নতুন CV upload করলে সেটা, না হলে profile-এর CV
+    if (isset($_FILES['resume']) && $_FILES['resume']['name'] != '') {
+      $ext = strtolower(pathinfo($_FILES['resume']['name'], PATHINFO_EXTENSION));
+      if ($ext != 'pdf') {
+        $applyError = 'CV must be a PDF file.';
+      } else if ($_FILES['resume']['size'] > 2 * 1024 * 1024) {
+        $applyError = 'CV must be smaller than 2MB.';
+      } else {
+        if (!is_dir('uploads/cv')) {
+          mkdir('uploads/cv', 0777, true);
+        }
+        $resume = 'uploads/cv/seeker_' . $seekerId . '_' . time() . '.pdf';
+        move_uploaded_file($_FILES['resume']['tmp_name'], $resume);
+        // profile-এ CV না থাকলে এটাকেই profile CV বানাই
+        if (!$seeker['resume_file']) {
+          $conn->query("UPDATE seekers SET resume_file = '$resume' WHERE id = $seekerId");
+        }
+      }
+    } else if ($seeker['resume_file']) {
+      $resume = $seeker['resume_file'];
+    } else {
+      $applyError = 'Please upload your CV (PDF) to apply.';
+    }
+
+    if ($applyError == '') {
+      $conn->query("INSERT INTO job_applications (job_id, seeker_id, resume_file, status)
+                    VALUES ($id, $seekerId, '$resume', 'applied')");
+
+      // Employer-কে notification
+      $msg = $conn->real_escape_string($_SESSION['name'] . ' applied for ' . $job['title']);
+      $conn->query("INSERT INTO notifications (user_id, message) VALUES ({$job['employer_user']}, '$msg')");
+
+      header("Location: job-details.php?id=$id&applied=1");
+      exit;
+    }
+  } else {
+    header("Location: job-details.php?id=$id");
+    exit;
+  }
+}
+
+// এই job-এর skill গুলো
+$skills = $conn->query("SELECT skills.name FROM job_skills
+                        JOIN skills ON skills.id = job_skills.skill_id
+                        WHERE job_skills.job_id = $id");
+
+// Similar Jobs: একই category-র অন্য job
+$catId = (int)$job['category_id'];
+$similar = $conn->query("SELECT jobs.*, companies.name AS company_name, companies.logo,
+                                cities.name AS city_name, categories.name AS category_name
+                         FROM jobs
+                         JOIN companies ON companies.id = jobs.company_id
+                         LEFT JOIN cities ON cities.id = jobs.city_id
+                         LEFT JOIN categories ON categories.id = jobs.category_id
+                         WHERE jobs.status = 'approved' AND jobs.deadline >= CURDATE() AND jobs.category_id = $catId AND jobs.id != $id
+                         ORDER BY jobs.id DESC LIMIT 3");
+
+// Salary
+if ($job['salary_min'] && $job['salary_max']) {
+  $salary = '৳' . number_format($job['salary_min']) . ' – ' . number_format($job['salary_max']);
+} else if ($job['salary_min']) {
+  $salary = '৳' . number_format($job['salary_min']);
+} else {
+  $salary = 'Negotiable';
+}
+$type    = ucwords(str_replace('_', ' ', $job['job_type']));
+$short   = strtoupper(substr($job['company_name'], 0, 2));
+$statusLabel = array('applied' => 'Applied', 'viewed' => 'Viewed by employer', 'shortlisted' => 'Shortlisted', 'interview' => 'Interview', 'hired' => 'Hired', 'rejected' => 'Not selected');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Senior PHP Developer | JobHub</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <title><?php echo $job['title']; ?> | JobHub</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
-<!-- ================= NAVBAR ================= -->
 <?php include('navber.php'); ?>
 <main>
 
 <section class="page-header">
   <div class="container">
-    <ul class="breadcrumb"><li><a href="index.html">Home</a></li><li><a href="jobs.php">Jobs</a></li><li>Senior PHP Developer</li></ul>
+    <ul class="breadcrumb"><li><a href="index.php">Home</a></li><li><a href="jobs.php">Jobs</a></li><li><?php echo $job['title']; ?></li></ul>
     <div class="job-hero mt-2">
-      <div class="company-logo lg" style="background:#0f766e">TV</div>
+      <?php if ($job['logo']) { ?><img class="company-logo lg" src="uploads/logos/<?php echo $job['logo']; ?>" alt="" style="object-fit:cover"><?php } else { ?><div class="company-logo lg" style="background:#0f766e"><?php echo $short; ?></div><?php } ?>
       <div class="job-hero-info">
-        <h1>Senior PHP Developer</h1>
+        <h1><?php echo $job['title']; ?></h1>
         <div class="job-meta">
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></svg>TechVerse Ltd.</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Banani, Dhaka</span>
-          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>৳80k – 120k</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Posted 2 days ago</span>
+          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><?php echo $job['address'] ? $job['address'] : $job['city_name']; ?></span>
+          <span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Deadline: <?php echo date('d M Y', strtotime($job['deadline'])); ?></span>
         </div>
       </div>
       <div class="job-hero-actions">
-        <button class="icon-btn" data-toggle-save title="Save job"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-        <button class="btn btn-primary btn-lg" data-modal-open="applyModal">Apply Now</button>
+        <a class="icon-btn <?php if ($isSaved) echo 'saved'; ?>" href="save-job.php?id=<?php echo $id; ?>" title="<?php echo $isSaved ? 'Remove from saved' : 'Save job'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
+        <?php if ($applied) { ?>
+          <a class="btn btn-light" href="seeker/applied-jobs.php">✓ Applied — <?php echo $statusLabel[$applied['status']]; ?></a>
+        <?php } else if ($isSeeker) { ?>
+          <button class="btn btn-primary btn-lg" data-modal-open="applyModal">Apply Now</button>
+        <?php } else if (isset($_SESSION['role'])) { ?>
+          <span class="muted small">Log in as a job seeker to apply</span>
+        <?php } else { ?>
+          <a class="btn btn-primary btn-lg" href="login.php?next=<?php echo urlencode('job-details.php?id=' . $id); ?>">Login to Apply</a>
+        <?php } ?>
       </div>
     </div>
   </div>
 </section>
 
+<?php if (isset($_GET['applied']) || $applyError != '') { ?>
+<div class="container mt-2">
+  <?php if (isset($_GET['applied'])) { ?><div class="alert alert-success"><span>Application sent! Track it in <a href="seeker/applied-jobs.php">Applied Jobs</a>.</span></div><?php } ?>
+  <?php if ($applyError != '') { ?><div class="alert alert-danger"><span><?php echo $applyError; ?></span></div><?php } ?>
+</div>
+<?php } ?>
 <section class="section-sm">
   <div class="container details-layout">
     <article class="card">
       <div class="card-body content-block">
         <h3>Job Description</h3>
-        <p>TechVerse is looking for an experienced PHP developer to build and maintain web applications used by thousands of customers. You will work closely with our product and design teams.</p>
-        <h3>Responsibilities</h3>
-        <ul>
-          <li>Develop new features using PHP (Laravel) and MySQL</li>
-          <li>Write clean, secure and well-tested code</li>
-          <li>Design database schemas and optimise slow queries</li>
-          <li>Review code and mentor junior developers</li>
-        </ul>
-        <h3>Requirements</h3>
-        <ul>
-          <li>3+ years of professional PHP experience</li>
-          <li>Strong knowledge of OOP, MVC and REST APIs</li>
-          <li>Good understanding of MySQL, Git and Linux</li>
-          <li>B.Sc. in CSE or related field (preferred)</li>
-        </ul>
-        <h3>Benefits</h3>
-        <ul>
-          <li>Two festival bonuses &amp; yearly increment</li>
-          <li>Hybrid work (3 days office)</li>
-          <li>Lunch, health insurance &amp; learning budget</li>
-        </ul>
-        <h3>Skills</h3>
-        <div class="tags"><span class="tag">PHP</span><span class="tag">Laravel</span><span class="tag">MySQL</span><span class="tag">REST API</span><span class="tag">Git</span></div>
+        <p><?php echo nl2br($job['description']); ?></p>
+
+        <?php if ($skills->num_rows > 0) { ?>
+          <h3>Skills</h3>
+          <div class="tags">
+            <?php while ($s = $skills->fetch_assoc()) { ?>
+              <span class="tag"><?php echo $s['name']; ?></span>
+            <?php } ?>
+          </div>
+        <?php } ?>
+
         <hr class="divider">
         <div class="flex items-center justify-between wrap gap-2">
-          <p class="mb-0 muted">Application deadline: <strong>30 Nov 2026</strong></p>
-          <button class="btn btn-primary" data-modal-open="applyModal">Apply for this job</button>
+          <p class="mb-0 muted">Application deadline: <strong><?php echo date('d M Y', strtotime($job['deadline'])); ?></strong></p>
+          <?php if ($applied) { ?>
+          <a class="btn btn-light" href="seeker/applied-jobs.php">✓ Applied — <?php echo $statusLabel[$applied['status']]; ?></a>
+        <?php } else if ($isSeeker) { ?>
+          <button class="btn btn-primary " data-modal-open="applyModal">Apply for this job</button>
+        <?php } else if (isset($_SESSION['role'])) { ?>
+          <span class="muted small">Log in as a job seeker to apply</span>
+        <?php } else { ?>
+          <a class="btn btn-primary " href="login.php?next=<?php echo urlencode('job-details.php?id=' . $id); ?>">Login to Apply</a>
+        <?php } ?>
         </div>
+        <p class="small muted mt-2">Share: <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" target="_blank">Facebook</a>
+          · <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" target="_blank">LinkedIn</a></p>
       </div>
     </article>
 
@@ -72,90 +198,58 @@
         <div class="card-header"><h3>Job Overview</h3></div>
         <div class="card-body">
           <ul class="overview-list">
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><div><small>Posted on</small><strong>08 Nov 2026</strong></div></li>
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><small>Deadline</small><strong>30 Nov 2026</strong></div></li>
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><div><small>Job type</small><strong>Full-time</strong></div></li>
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><div><small>Vacancy</small><strong>2 positions</strong></div></li>
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.89"/></svg><div><small>Experience</small><strong>3 – 5 years</strong></div></li>
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><div><small>Salary</small><strong>৳80,000 – 120,000</strong></div></li>
-            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><small>Location</small><strong>Banani, Dhaka</strong></div></li>
+            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><small>Deadline</small><strong><?php echo date('d M Y', strtotime($job['deadline'])); ?></strong></div></li>
+            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><div><small>Job type</small><strong><?php echo $type; ?></strong></div></li>
+            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><div><small>Category</small><strong><?php echo $job['category_name']; ?></strong></div></li>
+            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><div><small>Salary</small><strong><?php echo $salary; ?></strong></div></li>
+            <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><small>Location</small><strong><?php echo $job['city_name']; ?></strong></div></li>
           </ul>
         </div>
       </div>
       <div class="card">
         <div class="card-body text-center">
-          <div class="company-logo lg" style="background:#0f766e;margin:0 auto 12px">TV</div>
-          <h3 class="mb-0">TechVerse Ltd.</h3>
-          <p class="muted small">Software · 50–200 employees</p>
-          <p class="small">A product company building SaaS tools for small businesses in South Asia.</p>
-          <a href="companies.php" class="btn btn-light btn-block">View company</a>
+          <?php if ($job['logo']) { ?><img class="company-logo lg" src="uploads/logos/<?php echo $job['logo']; ?>" alt="" style="object-fit:cover;margin:0 auto 12px;display:block"><?php } else { ?><div class="company-logo lg" style="background:#0f766e;margin:0 auto 12px"><?php echo $short; ?></div><?php } ?>
+          <h3 class="mb-0"><?php echo $job['company_name']; ?></h3>
+          <p class="small"><?php echo $job['company_desc']; ?></p>
+          <a href="companies.php?id=<?php echo $job['company_id']; ?>" class="btn btn-light btn-block">View company</a>
         </div>
       </div>
     </aside>
   </div>
 </section>
 
-<!-- APPLY MODAL -->
+<?php if ($similar->num_rows > 0) { ?>
+<section class="section-sm">
+  <div class="container">
+    <h2 class="mb-2">Similar jobs</h2>
+    <div class="grid grid-3">
+      <?php while ($row = $similar->fetch_assoc()) { include('job-card.php'); } ?>
+    </div>
+  </div>
+</section>
+<?php } ?>
+
+<!-- APPLY MODAL: seeker login করা থাকলে -->
+<?php if ($isSeeker && !$applied) { ?>
 <div class="modal" id="applyModal">
   <div class="modal-dialog">
-    <form action="" method="post" enctype="multipart/form-data">
-      <div class="modal-header"><h3>Apply for Senior PHP Developer</h3><button type="button" class="modal-close" data-modal-close>&times;</button></div>
+    <form action="job-details.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
+      <div class="modal-header"><h3>Apply for <?php echo $job['title']; ?></h3><button type="button" class="modal-close" data-modal-close>&times;</button></div>
       <div class="modal-body">
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Full name <span class="req">*</span></label><input class="form-control" name="name" required></div>
-          <div class="form-group"><label class="form-label">Phone <span class="req">*</span></label><input class="form-control" name="phone" required></div>
-        </div>
-        <div class="form-group"><label class="form-label">Expected salary</label><input class="form-control" type="number" name="expected_salary" placeholder="e.g. 90000"></div>
-        <div class="form-group"><label class="form-label">Cover letter</label><textarea class="form-control" name="cover_letter" placeholder="Why are you a good fit?"></textarea></div>
-        <div class="form-group">
-          <label class="form-label">Resume / CV <span class="req">*</span></label>
-          <label class="file-drop"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="file-name">Click to upload PDF (max 2MB)</span><input type="file" name="resume" accept=".pdf,.doc,.docx"></label>
-        </div>
+        <p class="small muted">Your profile (name, phone, education, experience, skills) will be shared with <?php echo $job['company_name']; ?>.
+          <a href="seeker/profile.php">Update profile</a></p>
+        <?php if ($seeker['resume_file']) { ?>
+          <p>Your profile CV: <a href="<?php echo $seeker['resume_file']; ?>" target="_blank"><?php echo basename($seeker['resume_file']); ?></a> will be sent.</p>
+          <label class="form-label">Or upload a different CV (optional)</label>
+        <?php } else { ?>
+          <label class="form-label">Resume / CV (PDF) <span class="req">*</span></label>
+        <?php } ?>
+        <label class="file-drop"><span class="file-name">Click to upload PDF (max 2MB)</span><input type="file" name="resume" accept=".pdf"></label>
       </div>
-      <div class="modal-footer"><button type="button" class="btn btn-light" data-modal-close>Cancel</button><button class="btn btn-primary" type="submit">Submit Application</button></div>
+      <div class="modal-footer"><button type="button" class="btn btn-light" data-modal-close>Cancel</button><button class="btn btn-primary" type="submit" name="apply">Submit Application</button></div>
     </form>
   </div>
 </div>
+<?php } ?>
 </main>
-<!-- ================= FOOTER ================= -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a href="index.html" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
-        <p class="mt-2">Bangladesh's friendly job platform connecting talented people with great employers.</p>
-      </div>
-      <div>
-        <h4>For Job Seekers</h4>
-        <ul>
-          <li><a href="jobs.php">Browse Jobs</a></li>
-          <li><a href="register.php">Create Account</a></li>
-          <li><a href="seeker/dashboard.php">My Dashboard</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>For Employers</h4>
-        <ul>
-          <li><a href="employer/post-job.php">Post a Job</a></li>
-          <li><a href="employer/applicants.php">Applicants</a></li>
-          <li><a href="employer/dashboard.php">Employer Dashboard</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Newsletter</h4>
-        <p>Get new jobs in your inbox every week.</p>
-        <form class="newsletter" action="#" method="post">
-          <input type="email" class="form-control" placeholder="Your email" required>
-          <button class="btn btn-primary" type="submit">Join</button>
-        </form>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 JobHub. All rights reserved.</span>
-      <span><a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></span>
-    </div>
-  </div>
-</footer>
-<script src="assets/js/main.js"></script>
-</body>
-</html>
+<?php include('footer.php'); ?>
