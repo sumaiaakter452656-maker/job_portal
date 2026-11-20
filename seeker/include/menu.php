@@ -1,8 +1,8 @@
 <?php
-// Seeker-এর বাঁ দিকের menu আর উপরের bar। সব seeker পেজ এটা include করে।
+// Seeker's left menu and top bar. Every seeker page includes this.
 $page = basename($_SERVER['PHP_SELF']);
 
-// Saved job কয়টা (menu-তে সংখ্যা দেখানোর জন্য)
+// Number of saved jobs (to show in the menu)
 $savedCount = $conn->query("SELECT COUNT(*) AS c FROM saved_jobs WHERE seeker_id = $seekerId")->fetch_assoc()['c'];
 ?>
 <aside class="sidebar">

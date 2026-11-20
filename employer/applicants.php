@@ -2,13 +2,13 @@
 include('include/check.php');
 $pageTitle = 'Applicants';
 
-// ===== Status বদলানো (Shortlist / Interview / Hire / Reject) =====
+// ===== Change status (Shortlist / Interview / Hire / Reject) =====
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $appId  = (int)$_POST['app_id'];
   $status = $_POST['status'];
 
   if (isset($statusLabel[$status])) {
-    // application টা আমার company-র job-এর কিনা যাচাই
+    // Check that the application belongs to a job of my company
     $app = $conn->query("SELECT job_applications.*, jobs.title, seekers.user_id AS seeker_user
                          FROM job_applications
                          JOIN jobs ON jobs.id = job_applications.job_id
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($app) {
       $conn->query("UPDATE job_applications SET status = '$status' WHERE id = $appId");
 
-      // Seeker-কে notification
+      // Notify the seeker
       $messages = array(
         'viewed'      => $company['name'] . ' viewed your application for ' . $app['title'],
         'shortlisted' => $company['name'] . ' shortlisted you for ' . $app['title'],
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   exit;
 }
 
-// ===== Filter: কোন job, কোন status =====
+// ===== Filter: which job, which status =====
 $jobFilter = isset($_GET['job']) ? (int)$_GET['job'] : 0;
 $status    = isset($_GET['status']) ? $_GET['status'] : '';
 

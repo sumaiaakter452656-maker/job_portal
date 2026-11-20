@@ -2,13 +2,13 @@
 include('include/check.php');
 include('../dbconfig.php');
 
-// সংখ্যা আনার ছোট function
+//  function
 function one($conn, $sql) {
   $row = $conn->query($sql)->fetch_assoc();
   return $row ? (float)$row['c'] : 0;
 }
 
-// ===== মোট হিসাব =====
+// ===== total =====
 $income      = one($conn, "SELECT SUM(total_amount) AS c FROM payment_transactions WHERE status = 'completed'");
 $paidCount   = one($conn, "SELECT COUNT(*) AS c FROM payment_transactions WHERE status = 'completed'");
 $totalJobs   = one($conn, "SELECT COUNT(*) AS c FROM jobs");
@@ -17,7 +17,7 @@ $totalApps   = one($conn, "SELECT COUNT(*) AS c FROM job_applications");
 $hired       = one($conn, "SELECT COUNT(*) AS c FROM job_applications WHERE status = 'hired'");
 $hireRate    = $totalApps > 0 ? round($hired / $totalApps * 100) : 0;
 
-// ===== গত ৬ মাস: আয়, নতুন user, application =====
+// ===== last 6 month: income, new user, application =====
 $months = array();
 for ($i = 5; $i >= 0; $i--) {
   $key = date('Y-m', strtotime("first day of -$i month"));
@@ -34,7 +34,7 @@ $r = $conn->query("SELECT DATE_FORMAT(applied_at, '%Y-%m') AS m, COUNT(*) AS c F
 while ($x = $r->fetch_assoc()) { if (isset($months[$x['m']])) $months[$x['m']]['apps'] = (int)$x['c']; }
 $maxIncome = max(1, max(array_column($months, 'income')));
 
-// ===== Category অনুযায়ী job =====
+// ===== Category job =====
 $byCategory = $conn->query("SELECT categories.name, COUNT(jobs.id) AS total,
                                    SUM(CASE WHEN jobs.status = 'approved' AND jobs.deadline >= CURDATE() THEN 1 ELSE 0 END) AS live
                             FROM categories LEFT JOIN jobs ON jobs.category_id = categories.id
@@ -43,14 +43,14 @@ $byCategory = $conn->query("SELECT categories.name, COUNT(jobs.id) AS total,
 // ===== Application status =====
 $byStatus = $conn->query("SELECT status, COUNT(*) AS c FROM job_applications GROUP BY status ORDER BY c DESC");
 
-// ===== সবচেয়ে বেশি application পাওয়া company =====
+// ===== maximum application  company =====
 $topCompanies = $conn->query("SELECT companies.name, COUNT(job_applications.id) AS apps, COUNT(DISTINCT jobs.id) AS jobs
                               FROM companies
                               JOIN jobs ON jobs.company_id = companies.id
                               LEFT JOIN job_applications ON job_applications.job_id = jobs.id
                               GROUP BY companies.id ORDER BY apps DESC LIMIT 5");
 
-// ===== কোন package কতবার বিক্রি =====
+// ===== max sold package  =====
 $byPackage = $conn->query("SELECT packages.name, COUNT(payment_transactions.id) AS sold, SUM(payment_transactions.total_amount) AS income
                            FROM packages
                            LEFT JOIN subscriptions ON subscriptions.package_id = packages.id

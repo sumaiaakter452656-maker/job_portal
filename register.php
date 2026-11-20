@@ -5,14 +5,14 @@ include('dbconfig.php');
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  // ===== ১. Form-এর তথ্য নেওয়া =====
+  // ===== 1. Read the form data =====
   $role         = $_POST['role'] == 'employer' ? 'employer' : 'seeker';
   $name         = $conn->real_escape_string(trim($_POST['name']));
   $email        = $conn->real_escape_string(trim($_POST['email']));
   $phone        = $conn->real_escape_string(trim($_POST['phone']));
   $company_name = $conn->real_escape_string(trim($_POST['company_name']));
 
-  // ===== ২. যাচাই (Validation) =====
+  // ===== 2. Validation =====
   if ($name == '' || $email == '' || $_POST['password'] == '') {
     $error = 'Please fill in all required fields.';
   } else if ($_POST['password'] != $_POST['password_confirm']) {
@@ -20,37 +20,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   } else if ($role == 'employer' && $company_name == '') {
     $error = 'Please enter your company name.';
   } else {
-    // একই email দিয়ে আগে account আছে কিনা
+    // Check whether an account with this email already exists
     $check = $conn->query("SELECT id FROM users WHERE email = '$email'");
     if ($check->num_rows > 0) {
       $error = 'This email is already registered. Please log in.';
     }
   }
 
-  // ===== ৩. সব ঠিক থাকলে database-এ save =====
+  // ===== 3. If everything is fine, save to the database =====
   if ($error == '') {
     $password = sha1($_POST['password']);
 
-    // users টেবিলে নতুন user
+    // New user in the users table
     $conn->query("INSERT INTO users (name, email, phone, password, role, status)
                   VALUES ('$name', '$email', '$phone', '$password', '$role', 'active')");
-    $userId = $conn->insert_id;   // নতুন user-এর id
+    $userId = $conn->insert_id;   // the new user's id
 
     if ($role == 'seeker') {
-      // seekers টেবিলে খালি profile
+      // Empty profile in the seekers table
       $conn->query("INSERT INTO seekers (user_id) VALUES ($userId)");
     } else {
-      // companies টেবিলে company
+      // Company in the companies table
       $conn->query("INSERT INTO companies (user_id, name) VALUES ($userId, '$company_name')");
     }
 
-    // Login পেজে পাঠানো, সেখানে success message দেখাবে
+    // Go to the login page, which shows a success message
     header("Location: login.php?registered=1");
     exit;
   }
 }
 
-// Error হলে form-এ আগের লেখা রেখে দেওয়ার জন্য
+// To keep the typed values in the form when there is an error
 function old($field) {
   return isset($_POST[$field]) ? htmlspecialchars($_POST[$field]) : '';
 }

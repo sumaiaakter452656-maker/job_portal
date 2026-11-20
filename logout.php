@@ -1,5 +1,5 @@
 <?php
-// Session মুছে দিয়ে login পেজে ফেরত
+// Clear the session and go back to the login page
 session_start();
 session_destroy();
 header("Location: login.php");

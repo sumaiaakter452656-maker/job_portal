@@ -1,9 +1,9 @@
 <?php
 // =========================================================
-// aamarPay — SANDBOX (পরীক্ষার জন্য, টাকা কাটে না)
-// নিচের credential গুলো aamarPay-এর ডকুমেন্টেশনে দেওয়া পাবলিক sandbox credential।
-// আসল payment নিতে হলে aamarPay থেকে নিজের store_id আর signature_key নিয়ে
-// এখানে বসাতে হবে আর URL দুটো live URL দিয়ে বদলাতে হবে।
+// aamarPay — SANDBOX (for testing, no money is charged)
+// The credentials below are the public sandbox credentials from aamarPay's documentation.
+// To take real payments, get your own store_id and signature_key from aamarPay,
+// put them here and replace both URLs with the live URLs.
 // =========================================================
 define('AAMARPAY_PAY_URL',    'https://sandbox.aamarpay.com/jsonpost.php');
 define('AAMARPAY_SEARCH_URL', 'https://sandbox.aamarpay.com/api/v1/trxcheck/request.php');

@@ -1,8 +1,8 @@
 <?php
-// bKash Sandbox API-এর সাথে কথা বলার ছোট ছোট function
+// Small functions for talking to the bKash Sandbox API
 include_once(__DIR__ . '/bkash_config.php');
 
-// bKash server-এ একটা POST request পাঠানো (cURL দিয়ে)
+// Send a POST request to the bKash server (with cURL)
 function bkash_request($path, $body, $headers) {
   $ch = curl_init(BKASH_BASE_URL . $path);
   curl_setopt($ch, CURLOPT_POST, true);
@@ -22,8 +22,8 @@ function bkash_request($path, $body, $headers) {
   return is_array($data) ? $data : array('error' => 'Unexpected reply from bKash.');
 }
 
-// ১. Token নেওয়া (প্রতিটা কাজের আগে লাগে)
-//    সফল হলে token, না হলে $error-এ কারণ লেখা থাকে
+// 1. Get a token (needed before every call)
+//    Returns the token on success, otherwise $error holds the reason
 function bkash_token(&$error) {
   $res = bkash_request('/token/grant',
     array('app_key' => BKASH_APP_KEY, 'app_secret' => BKASH_APP_SECRET),
@@ -39,7 +39,7 @@ function bkash_headers($token) {
   return array('Authorization: ' . $token, 'X-App-Key: ' . BKASH_APP_KEY);
 }
 
-// ২. Payment তৈরি: bKash একটা bkashURL দেয়, user-কে সেখানে পাঠাতে হয়
+// 2. Create the payment: bKash returns a bkashURL, the user must be sent there
 function bkash_create($amount, $invoice, $callbackUrl, $payer) {
   $token = bkash_token($err);
   if ($token == '') return array('error' => $err);
@@ -54,14 +54,14 @@ function bkash_create($amount, $invoice, $callbackUrl, $payer) {
   ), bkash_headers($token));
 }
 
-// ৩. User PIN দেওয়ার পর payment চূড়ান্ত করা
+// 3. Finalise the payment after the user enters the PIN
 function bkash_execute($paymentId) {
   $token = bkash_token($err);
   if ($token == '') return array('error' => $err);
   return bkash_request('/execute', array('paymentID' => $paymentId), bkash_headers($token));
 }
 
-// ৪. Payment-এর অবস্থা জিজ্ঞেস করা (server-side verification)
+// 4. Ask for the payment status (server-side verification)
 function bkash_query($paymentId) {
   $token = bkash_token($err);
   if ($token == '') return array('error' => $err);

@@ -5,7 +5,7 @@ include('../payment/bkash.php');
 include('../payment/aamarpay.php');
 $pageTitle = 'Checkout';
 
-// কোন package কিনছে (দাম সবসময় database থেকে নেওয়া হয়, form থেকে না)
+// Which package is being bought (the price always comes from the database, never from the form)
 $packageId = isset($_GET['package']) ? (int)$_GET['package'] : 0;
 $package = $conn->query("SELECT * FROM packages WHERE id = $packageId AND price > 0")->fetch_assoc();
 if (!$package) {
@@ -26,31 +26,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   } else {
     $amount = $package['price'];
 
-    // ১. Pending subscription (টাকা পাওয়ার পরে active হবে)
+    // 1. Pending subscription (becomes active after payment)
     $conn->query("INSERT INTO subscriptions (user_id, package_id, posts_left, status)
                   VALUES ($userId, $packageId, 0, 'pending')");
     $subId = $conn->insert_id;
 
-    // ২. Pending transaction, নিজস্ব invoice নম্বর সহ
+    // 2. Pending transaction with our own invoice number
     $invoice = 'INV-' . date('Ymd') . '-' . strtoupper(substr(md5(uniqid()), 0, 6));
     $conn->query("INSERT INTO payment_transactions (transaction_no, user_id, subscription_id, payment_method_id, total_amount, status)
                   VALUES ('$invoice', $userId, $subId, $methodId, $amount, 'pending')");
 
     if ($method['name'] == 'bKash') {
-      // ৩ক. bKash Sandbox: bKash-এর নিজের payment পেজে পাঠানো
+      // 3a. bKash Sandbox: send the user to bKash's own payment page
       $callback = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/bkash-callback.php';
       $res = bkash_create($amount, $invoice, $callback, $company['name']);
       if (isset($res['bkashURL'])) {
-        // bKash থেকে নিজে থেকে ফেরত না এলে, Billing পেজ থেকে যাচাই করার জন্য মনে রাখি
+        // Remember it so it can be verified from the Billing page if bKash does not redirect back
         $_SESSION['bkash_payment_id'] = $res['paymentID'];
         header("Location: " . $res['bkashURL']);
         exit;
       }
-      // bKash-এ payment তৈরি না হলে transaction failed
+      // If bKash could not create the payment, mark the transaction failed
       $conn->query("UPDATE payment_transactions SET status = 'failed' WHERE transaction_no = '$invoice'");
       $error = 'bKash error: ' . (isset($res['error']) ? $res['error'] : (isset($res['statusMessage']) ? $res['statusMessage'] : 'Unknown error'));
     } else {
-      // ৩খ. Nagad / Card: aamarPay Sandbox-এর নিজের payment পেজে পাঠানো
+      // 3b. Nagad / Card: send the user to aamarPay Sandbox's own payment page
       $me = $conn->query("SELECT name, email, phone FROM users WHERE id = $userId")->fetch_assoc();
       $returnUrl = 'http://' . $_SERVER['HTTP_HOST'] . rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\') . '/payment/aamarpay-return.php?inv=' . $invoice;
       $res = aamarpay_create($invoice, $amount, 'JobHub ' . $package['name'] . ' package',

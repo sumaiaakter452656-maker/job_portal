@@ -2,7 +2,7 @@
 include('include/check.php');
 $pageTitle = 'Saved Jobs';
 
-// Saved list থেকে একটা job সরানো (?remove=job_id)
+// Remove a job from the saved list (?remove=job_id)
 if (isset($_GET['remove'])) {
   $jobId = (int)$_GET['remove'];
   $conn->query("DELETE FROM saved_jobs WHERE seeker_id = $seekerId AND job_id = $jobId");
@@ -38,7 +38,7 @@ $saved = $conn->query("SELECT jobs.*, companies.name AS company_name, cities.nam
 
   <div class="grid grid-2">
     <?php while ($row = $saved->fetch_assoc()) {
-      // deadline পার হয়ে গেছে কিনা
+      // Whether the deadline has passed
       $expired = strtotime($row['deadline']) < strtotime(date('Y-m-d'));
     ?>
       <div class="job-card">

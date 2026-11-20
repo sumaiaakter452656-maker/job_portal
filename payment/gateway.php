@@ -1,9 +1,9 @@
 <?php
 // =========================================================
-// নকল payment পেজ (Demo bKash / Nagad / Card)
-// এটা আসল কোনো কোম্পানির পেজ না। কোনো টাকা কাটে না।
-// Demo তথ্য:  OTP = 123456, PIN = 12345
-//             Card সফল = 4242 4242 4242 4242, Card বাতিল = 4000 0000 0000 0002
+// Fake payment page (Demo bKash / Nagad / Card)
+// This is not any real company's page. No money is charged.
+// Demo info:  OTP = 123456, PIN = 12345
+//             Card success = 4242 4242 4242 4242, Card declined = 4000 0000 0000 0002
 // =========================================================
 include('../dbconfig.php');
 include('demo_gateway.php');
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $pay['status'] == 'initiated') {
     if (!preg_match('/^[0-9]{16}$/', $card) || !preg_match('/^[0-9]{3}$/', $_POST['cvv']) || $_POST['expiry'] == '') {
       $error = 'Please enter a valid 16 digit card number, expiry and 3 digit CVV.';
     } else if ($card == '4000000000000002') {
-      // Demo: এই card বাতিল হয়
+      // Demo: this card is declined
       $conn->query("UPDATE demo_gateway SET status = 'failed', account = '**** " . substr($card, -4) . "' WHERE payment_id = '$pid'");
       header("Location: ../employer/payment-fail.php?payment_id=" . $pay['payment_id']);
       exit;
@@ -54,12 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $pay['status'] == 'initiated') {
   }
 
   if ($error == '') {
-    // সফল: gateway নিজের রেকর্ডে Completed লিখে, transaction ID দেয়
+    // Success: the gateway writes Completed in its own record and gives a transaction ID
     $prefix = array('bKash' => 'BK', 'Nagad' => 'NG', 'Card' => 'CD');
     $txId = $prefix[$pay['method']] . strtoupper(substr(md5(uniqid(rand(), true)), 0, 8));
     $conn->query("UPDATE demo_gateway SET status = 'completed', tx_id = '$txId', account = '$account' WHERE payment_id = '$pid'");
 
-    // Merchant-এর success পেজে ফেরত (সেখানে server আবার যাচাই করবে)
+    // Back to the merchant's success page (where the server verifies again)
     header("Location: ../employer/payment-success.php?payment_id=" . $pay['payment_id']);
     exit;
   }

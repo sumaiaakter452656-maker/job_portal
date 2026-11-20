@@ -1,11 +1,11 @@
 <?php
-// Job save / unsave করা (একবার চাপলে save, আবার চাপলে বাদ)
+// Save / unsave a job (click once to save, click again to remove)
 session_start();
 include('dbconfig.php');
 
 $jobId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Seeker login না করলে আগে login, তারপর এই job-এ ফেরত
+// If the seeker is not logged in, log in first, then come back to this job
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'seeker') {
   header("Location: login.php?next=" . urlencode('job-details.php?id=' . $jobId));
   exit;
@@ -22,7 +22,7 @@ if ($already->num_rows > 0) {
   $conn->query("INSERT INTO saved_jobs (seeker_id, job_id) VALUES ($seekerId, $jobId)");
 }
 
-// যে পেজ থেকে এসেছিল সেখানে ফেরত
+// Go back to the page the user came from
 $back = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'job-details.php?id=' . $jobId;
 header("Location: " . $back);
 exit;

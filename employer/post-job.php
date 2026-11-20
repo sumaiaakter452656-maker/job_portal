@@ -1,13 +1,13 @@
 <?php
 include('include/check.php');
 
-// ?id= থাকলে পুরনো job Edit, না থাকলে নতুন job Post
+// With ?id= edit an existing job, otherwise post a new job
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $pageTitle = $id ? 'Edit Job' : 'Post a Job';
 $error = '';
 $success = '';
 
-// Edit হলে পুরনো তথ্য আনা (শুধু নিজের company-র job)
+// When editing, load the old data (only my company's jobs)
 $job = array('title' => '', 'category_id' => '', 'city_id' => '', 'job_type' => 'full_time',
              'salary_min' => '', 'salary_max' => '', 'description' => '', 'deadline' => '');
 $jobSkills = '';
@@ -17,7 +17,7 @@ if ($id) {
     header("Location: manage-jobs.php");
     exit;
   }
-  // job-এর skill গুলো কমা দিয়ে
+  // The job's skills, separated by commas
   $sk = $conn->query("SELECT skills.name FROM job_skills JOIN skills ON skills.id = job_skills.skill_id WHERE job_skills.job_id = $id");
   $names = array();
   while ($s = $sk->fetch_assoc()) { $names[] = $s['name']; }
@@ -41,10 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error = 'Deadline must be today or a future date.';
   }
 
-  // নতুন job হলে package-এর limit দেখা
+  // For a new job, check the package limit
   if ($error == '' && !$id) {
     if (!$sub) {
-      // কখনো কোনো package নেয়নি? তাহলে Free package (id 1) একবার দিয়ে দেই
+      // Never had a package? Then give the Free package (id 1) once
       $hadPackage = $conn->query("SELECT COUNT(*) AS c FROM subscriptions WHERE user_id = $userId")->fetch_assoc()['c'];
       if ($hadPackage == 0) {
         $free = $conn->query("SELECT * FROM packages WHERE price = 0 ORDER BY id LIMIT 1")->fetch_assoc();
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $jobId = $id;
       $success = 'Job updated successfully.';
     } else {
-      // ===== Insert (admin approve করলে site-এ দেখাবে) =====
+      // ===== Insert (shown on the site after admin approval) =====
       $slug = strtolower(preg_replace('/[^A-Za-z0-9]+/', '-', $_POST['title'])) . '-' . time();
       $subId = (int)$sub['id'];
       $conn->query("INSERT INTO jobs (company_id, category_id, city_id, subscription_id, title, slug, job_type,
@@ -79,10 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             $salary_min, $salary_max, '$description', '$deadline', 'pending', 0)");
       $jobId = $conn->insert_id;
 
-      // package থেকে ১টা post কমানো
+      // Use 1 post from the package
       $conn->query("UPDATE subscriptions SET posts_left = posts_left - 1 WHERE id = $subId");
 
-      // সব admin-কে notification
+      // Notify all admins
       $admins = $conn->query("SELECT id FROM users WHERE role = 'admin'");
       $msg = $conn->real_escape_string('New job "' . $_POST['title'] . '" by ' . $company['name'] . ' needs approval');
       while ($ad = $admins->fetch_assoc()) {
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
     }
 
-    // ===== Skills: কমা দিয়ে লেখা নাম -> skills টেবিল -> job_skills =====
+    // ===== Skills: comma-separated names -> skills table -> job_skills =====
     $conn->query("DELETE FROM job_skills WHERE job_id = $jobId");
     foreach (explode(',', $_POST['skills']) as $name) {
       $name = $conn->real_escape_string(trim($name));
@@ -105,14 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $conn->query("INSERT INTO job_skills (job_id, skill_id) VALUES ($jobId, $skillId)");
     }
 
-    // নতুন job হলে My Jobs পেজে ফেরত
+    // For a new job, go back to the My Jobs page
     if (!$id) {
       header("Location: manage-jobs.php?posted=1");
       exit;
     }
   }
 
-  // Error হলে form-এ লেখা তথ্য রেখে দেই
+  // Keep the typed data in the form when there is an error
   $job = array_merge($job, $_POST);
   $jobSkills = $_POST['skills'];
 }

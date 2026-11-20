@@ -4,7 +4,7 @@ include('../dbconfig.php');
 include('../contact_table.php');
 contact_setup($conn);
 
-// ===== মুছে ফেলা =====
+
 if (isset($_GET['delete'])) {
   $mid = (int)$_GET['delete'];
   $conn->query("DELETE FROM contact_messages WHERE id = $mid");
@@ -12,7 +12,6 @@ if (isset($_GET['delete'])) {
   exit;
 }
 
-// ===== একটা message খোলা (খুললেই "read" হয়ে যায়) =====
 $open = null;
 if (isset($_GET['view'])) {
   $mid = (int)$_GET['view'];

@@ -1,13 +1,13 @@
 <?php
 // =========================================================
-// bKash Tokenized Checkout — SANDBOX (পরীক্ষার জন্য, টাকা কাটে না)
-// নিচের credential গুলো bKash-এর পাবলিক sandbox credential।
-// আসল (Live) payment নিতে হলে bKash থেকে নিজের merchant credential নিয়ে
-// এখানে বসাতে হবে আর BKASH_BASE_URL বদলাতে হবে।
+// bKash Tokenized Checkout — SANDBOX (for testing, no money is charged)
+// The credentials below are bKash's public sandbox credentials.
+// To take real (Live) payments, get your own merchant credentials from bKash,
+// put them here and change BKASH_BASE_URL.
 //
-// Sandbox পরীক্ষার wallet (একটা locked হলে অন্যটা দিন):
+// Sandbox test wallets (if one is locked, use another):
 //   01929918378, 01770618576, 01877722345, 01619777282, 01619777283, 01770618575
-//   সবগুলোর OTP 123456,  PIN 12121
+//   OTP for all of them 123456,  PIN 12121
 // =========================================================
 define('BKASH_BASE_URL',   'https://tokenized.sandbox.bka.sh/v1.2.0-beta/tokenized/checkout');
 define('BKASH_APP_KEY',    '0vWQuCRGiUX7EPVjQDr0EUAYtc');

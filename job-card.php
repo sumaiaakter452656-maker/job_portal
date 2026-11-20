@@ -1,10 +1,10 @@
 <?php
-// একটা job-এর card। while loop-এর ভেতরে include করা হয়, তাই $row আগে থেকেই থাকে।
+// One job card. It is included inside a while loop, so $row already exists.
 
-// Logo না থাকলে company-র নামের প্রথম ২ অক্ষর দেখাবো
+// If there is no logo, show the first 2 letters of the company name
 $short = strtoupper(substr($row['company_name'], 0, 2));
 
-// Salary লেখা
+// Salary text
 if ($row['salary_min'] && $row['salary_max']) {
   $salary = '৳' . number_format($row['salary_min']) . ' – ' . number_format($row['salary_max']);
 } else if ($row['salary_min']) {
@@ -16,7 +16,7 @@ if ($row['salary_min'] && $row['salary_max']) {
 // full_time -> Full Time
 $type = ucwords(str_replace('_', ' ', $row['job_type']));
 
-// Seeker login করা থাকলে, এই job আগে save করেছে কিনা
+// If a seeker is logged in, check whether they already saved this job
 $isSaved = false;
 if (isset($_SESSION['role']) && $_SESSION['role'] == 'seeker') {
   $uid = (int)$_SESSION['user_id'];
@@ -25,7 +25,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 'seeker') {
                            WHERE seekers.user_id = $uid AND saved_jobs.job_id = {$row['id']}")->num_rows > 0;
 }
 ?>
-<!-- পুরো card-এ click করলেই details পেজ খুলবে -->
+<!-- Clicking anywhere on the card opens the details page -->
 <div class="job-card" style="cursor:pointer" onclick="location.href='job-details.php?id=<?php echo $row['id']; ?>'">
   <div class="job-card-head">
     <?php if ($row['logo']) { ?>

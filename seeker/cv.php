@@ -2,12 +2,12 @@
 include('include/check.php');
 $pageTitle = 'CV Builder';
 
-// লেখা নিরাপদে দেখানোর ছোট function
+// Small function to print text safely
 function e($text) {
   return htmlspecialchars((string)$text);
 }
 
-// ===== নতুন template গুলো database-এ না থাকলে যোগ করা =====
+// ===== Add the new templates to the database if they are missing =====
 $extra = array('Minimal' => 'templates/minimal.php', 'Executive' => 'templates/executive.php');
 foreach ($extra as $tname => $tfile) {
   if ($conn->query("SELECT id FROM cv_templates WHERE layout_file = '$tfile'")->num_rows == 0) {
@@ -18,7 +18,7 @@ $templates = $conn->query("SELECT * FROM cv_templates WHERE status = 'active' OR
 $list = array();
 while ($t = $templates->fetch_assoc()) { $list[$t['id']] = $t; }
 
-// ===== Template বাছাই করে save (?choose=ID) =====
+// ===== Choose a template and save it (?choose=ID) =====
 if (isset($_GET['choose']) && isset($list[(int)$_GET['choose']])) {
   $tid = (int)$_GET['choose'];
   $conn->query("UPDATE seekers SET cv_template_id = $tid WHERE id = $seekerId");
@@ -26,11 +26,11 @@ if (isset($_GET['choose']) && isset($list[(int)$_GET['choose']])) {
   exit;
 }
 
-// কোন template দেখাবো: ?preview=ID (ছোট ছবির জন্য), না হলে নিজের বাছাই করা, না হলে প্রথমটা
+// Which template to show: ?preview=ID (for the thumbnail), else the chosen one, else the first one
 $currentId = isset($list[(int)$me['cv_template_id']]) ? (int)$me['cv_template_id'] : (int)key($list);
 $showId = isset($_GET['preview']) && isset($list[(int)$_GET['preview']]) ? (int)$_GET['preview'] : $currentId;
 
-// ===== CV-এর সব তথ্য profile থেকে =====
+// ===== All CV data from the profile =====
 $cv = array(
   'name'     => $me['name'],
   'headline' => $me['headline'],
@@ -55,15 +55,15 @@ while ($x = $r->fetch_assoc()) {
   if ($x['type'] == 'language') $cv['languages'][] = $x;
 }
 
-// তারিখ সুন্দর করে লেখা (যেমন Jan 2024 – Present)
+// Format dates nicely (e.g. Jan 2024 – Present)
 function cv_dates($start, $end, $current = 0) {
   $s = $start ? date('M Y', strtotime($start)) : '';
   $t = $current ? 'Present' : ($end ? date('M Y', strtotime($end)) : '');
   return trim($s . ($s && $t ? ' – ' : '') . $t);
 }
 
-// ===== শুধু CV (print / PDF / ছোট ছবির জন্য) =====
-// ?preview=ID ছোট ছবি, ?view=1 শুধু CV, ?pdf=1 নিজে থেকে PDF download, ?print=1 নিজে থেকে print
+// ===== CV only (for print / PDF / thumbnail) =====
+// ?preview=ID thumbnail, ?view=1 CV only, ?pdf=1 auto PDF download, ?print=1 auto print
 $fullView = isset($_GET['print']) || isset($_GET['pdf']) || isset($_GET['view']);
 if ($fullView || isset($_GET['preview'])) {
   $file = 'templates/' . basename($list[$showId]['layout_file']);
@@ -98,7 +98,7 @@ if ($fullView || isset($_GET['preview'])) {
     <?php if (file_exists($file)) { include($file); } else { echo '<p style="padding:40px">Template file not found.</p>'; } ?>
   </div>
   <?php if ($fullView) { ?>
-    <!-- html2pdf: পেজটাকে সরাসরি PDF ফাইল বানায় (internet লাগবে) -->
+    <!-- html2pdf: turns the page directly into a PDF file (needs internet) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
       function downloadPdf() {

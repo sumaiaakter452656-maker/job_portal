@@ -1,12 +1,12 @@
 <?php
 // =========================================================
-// DEMO PAYMENT GATEWAY (নকল bKash / Nagad / Card)
-// আসল gateway-এর নিজের server আর database থাকে।
-// এখানে সেটার বদলে demo_gateway টেবিল ব্যবহার করছি।
-// এখানে কোনো টাকা কাটে না।
+// DEMO PAYMENT GATEWAY (fake bKash / Nagad / Card)
+// A real gateway has its own server and database.
+// Here we use the demo_gateway table instead.
+// No money is charged here.
 // =========================================================
 
-// টেবিল না থাকলে বানিয়ে নেওয়া
+// Create the table if it does not exist
 function gateway_setup($conn) {
   $conn->query("CREATE TABLE IF NOT EXISTS demo_gateway (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -21,8 +21,8 @@ function gateway_setup($conn) {
   )");
 }
 
-// ১. Merchant (আমাদের site) gateway-কে বলে: "এই invoice-এর জন্য এত টাকা নাও"
-//    Gateway একটা payment_id ফেরত দেয়।
+// 1. The merchant (our site) tells the gateway: "take this amount for this invoice"
+//    The gateway returns a payment_id.
 function gateway_create($conn, $invoice, $amount, $method) {
   gateway_setup($conn);
   $paymentId = 'PAY' . strtoupper(substr(md5(uniqid(rand(), true)), 0, 12));
@@ -34,8 +34,8 @@ function gateway_create($conn, $invoice, $amount, $method) {
   return $paymentId;
 }
 
-// ২. Payment হয়েছে কিনা gateway-কে জিজ্ঞেস করা (Server-side verification)
-//    URL-এ কী লেখা আছে তা বিশ্বাস না করে, gateway-এর নিজের রেকর্ড দেখা হয়।
+// 2. Ask the gateway whether the payment was made (server-side verification)
+//    Instead of trusting what is in the URL, the gateway's own record is checked.
 function gateway_query($conn, $paymentId) {
   gateway_setup($conn);
   $paymentId = $conn->real_escape_string($paymentId);

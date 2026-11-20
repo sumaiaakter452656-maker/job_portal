@@ -5,23 +5,23 @@ include('../payment/activate.php');
 $pageTitle = 'Payment Result';
 
 // =========================================================
-// শুধু এই পেজে চলে আসলেই payment সফল ধরা হবে না।
-// নিচের সব যাচাই পার হলে তবেই subscription চালু হবে।
+// Reaching this page alone does not mean the payment succeeded.
+// The subscription is activated only after all the checks below pass.
 // =========================================================
 $paymentId = isset($_GET['payment_id']) ? $_GET['payment_id'] : '';
 $ok = false;
 $message = '';
 
-// যাচাই ১: gateway-কে জিজ্ঞেস করা, এই payment আসলেই আছে কিনা
+// Check 1: ask the gateway whether this payment really exists
 $g = gateway_query($conn, $paymentId);
 
 if (!$g) {
   $message = 'Payment not found at the gateway.';
 } else if ($g['status'] != 'completed') {
-  // যাচাই ২: gateway বলছে Completed কিনা
+  // Check 2: does the gateway say Completed?
   $message = 'The gateway says this payment is "' . $g['status'] . '", not completed.';
 } else {
-  // যাচাই ৩: invoice টা আমাদের database-এ আছে আর এই employer-এর কিনা
+  // Check 3: is the invoice in our database and does it belong to this employer?
   $invoice = $conn->real_escape_string($g['invoice_no']);
   $trx = $conn->query("SELECT payment_transactions.*, subscriptions.package_id
                        FROM payment_transactions
@@ -32,7 +32,7 @@ if (!$g) {
   if (!$trx) {
     $message = 'This invoice does not belong to your account.';
   } else if ($trx['status'] == 'completed') {
-    // যাচাই ৪: আগেই চালু করা হয়েছে (page refresh করলে দুবার চালু হবে না)
+    // Check 4: already activated? (a page refresh will not activate it twice)
     $ok = true;
     $message = 'This payment was already verified.';
   } else {
@@ -41,14 +41,14 @@ if (!$g) {
     $used = $conn->query("SELECT id FROM payment_transactions WHERE tx_id = '$txId' AND id != {$trx['id']}")->num_rows;
 
     if ((float)$g['amount'] != (float)$trx['total_amount'] || (float)$trx['total_amount'] != (float)$package['price']) {
-      // যাচাই ৫: টাকার পরিমাণ package-এর দামের সাথে মিলছে কিনা
+      // Check 5: does the amount match the package price?
       $message = 'Amount mismatch. Paid ৳' . $g['amount'] . ' but the package costs ৳' . $package['price'] . '.';
       $conn->query("UPDATE payment_transactions SET status = 'failed' WHERE id = {$trx['id']}");
     } else if ($used > 0) {
-      // যাচাই ৬: একই transaction ID আগে ব্যবহার হয়েছে কিনা
+      // Check 6: has the same transaction ID been used before?
       $message = 'This transaction ID was already used.';
     } else {
-      // ===== সব যাচাই পার: payment completed + subscription active =====
+      // ===== All checks passed: payment completed + subscription active =====
       activate_package($conn, $trx, $package, $g['tx_id'], $userId, $company['name']);
 
       $ok = true;
@@ -57,7 +57,7 @@ if (!$g) {
   }
 }
 
-// চালু package আবার আনা (উপরের menu-তে ঠিক সংখ্যা দেখানোর জন্য)
+// Load the active package again (to show the right numbers in the top menu)
 $sub = $conn->query("SELECT subscriptions.*, packages.name AS package_name FROM subscriptions
                      JOIN packages ON packages.id = subscriptions.package_id
                      WHERE subscriptions.user_id = $userId AND subscriptions.status = 'active'

@@ -2,11 +2,11 @@
 session_start();
 include('dbconfig.php');
 
-// ?id= থাকলে একটা company-র profile দেখাবো, না থাকলে সব company-র list
+// With ?id= show one company's profile, otherwise list all companies
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($id > 0) {
-  // ===== একটা Company-র Profile =====
+  // ===== One company's profile =====
   $company = $conn->query("SELECT companies.*, cities.name AS city_name
                            FROM companies
                            LEFT JOIN cities ON cities.id = companies.city_id
@@ -17,7 +17,7 @@ if ($id > 0) {
     exit;
   }
 
-  // এই company-র approved job গুলো
+  // This company's approved jobs
   $jobs = $conn->query("SELECT jobs.*, companies.name AS company_name, companies.logo,
                                cities.name AS city_name, categories.name AS category_name
                         FROM jobs
@@ -27,7 +27,7 @@ if ($id > 0) {
                         WHERE jobs.company_id = $id AND jobs.status = 'approved' AND jobs.deadline >= CURDATE()
                         ORDER BY jobs.id DESC");
 } else {
-  // ===== সব Company (search সহ) =====
+  // ===== All companies (with search) =====
   $q = isset($_GET['q']) ? $conn->real_escape_string($_GET['q']) : '';
 
   $sql = "SELECT companies.*, cities.name AS city_name, COUNT(jobs.id) AS total_jobs

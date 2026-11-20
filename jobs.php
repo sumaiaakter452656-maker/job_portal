@@ -2,7 +2,7 @@
 session_start();
 include('dbconfig.php');
 
-// ===== ১. Form থেকে আসা filter গুলো নেওয়া =====
+// ===== 1. Read the filters from the form =====
 $q        = isset($_GET['q']) ? $conn->real_escape_string($_GET['q']) : '';
 $city     = isset($_GET['city']) ? (int)$_GET['city'] : 0;
 $category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
@@ -11,7 +11,7 @@ $min      = isset($_GET['min']) ? (int)$_GET['min'] : 0;
 $max      = isset($_GET['max']) ? (int)$_GET['max'] : 0;
 $sort     = isset($_GET['sort']) ? $_GET['sort'] : 'new';
 
-// ===== ২. WHERE অংশ বানানো =====
+// ===== 2. Build the WHERE part =====
 $where = "WHERE jobs.status = 'approved' AND jobs.deadline >= CURDATE()";
 
 if ($q != '') {
@@ -23,7 +23,7 @@ if ($city > 0) {
 if ($category > 0) {
   $where .= " AND jobs.category_id = $category";
 }
-// job_type শুধু এই ৫টার একটা হতে পারবে
+// job_type can only be one of these 5
 $allTypes = array('full_time', 'part_time', 'contract', 'internship', 'remote');
 if (in_array($type, $allTypes)) {
   $where .= " AND jobs.job_type = '$type'";
@@ -35,7 +35,7 @@ if ($max > 0) {
   $where .= " AND jobs.salary_min <= $max";
 }
 
-// ===== ৩. Sorting =====
+// ===== 3. Sorting =====
 if ($sort == 'salary_high') {
   $order = "ORDER BY jobs.salary_max DESC";
 } else if ($sort == 'salary_low') {
@@ -46,7 +46,7 @@ if ($sort == 'salary_high') {
   $order = "ORDER BY jobs.is_featured DESC, jobs.id DESC";
 }
 
-// ===== ৪. Pagination =====
+// ===== 4. Pagination =====
 $perPage = 6;
 $pageNo  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($pageNo < 1) $pageNo = 1;
@@ -57,20 +57,20 @@ $from = "FROM jobs
          LEFT JOIN cities ON cities.id = jobs.city_id
          LEFT JOIN categories ON categories.id = jobs.category_id";
 
-// মোট কয়টা job পাওয়া গেল
+// Total number of jobs found
 $total = $conn->query("SELECT COUNT(*) AS c $from $where")->fetch_assoc()['c'];
 $totalPages = ceil($total / $perPage);
 
-// এই পেজের job গুলো
+// Jobs for this page
 $jobs = $conn->query("SELECT jobs.*, companies.name AS company_name, companies.logo,
                              cities.name AS city_name, categories.name AS category_name
                       $from $where $order LIMIT $offset, $perPage");
 
-// Filter dropdown-এর জন্য
+// For the filter dropdowns
 $cities     = $conn->query("SELECT * FROM cities ORDER BY name");
 $categories = $conn->query("SELECT * FROM categories ORDER BY name");
 
-// Pagination link-এ বাকি filter গুলো রেখে দেওয়ার জন্য
+// To keep the other filters in the pagination links
 $params = $_GET;
 unset($params['page']);
 $link = 'jobs.php?' . http_build_query($params) . '&page=';

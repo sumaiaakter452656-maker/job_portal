@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 
-// একটা record আনা
+// Load one record
 $row = $conn->query("SELECT * FROM categories WHERE id = $id")->fetch_object();
 if (!$row) {
   header("Location: index.php");

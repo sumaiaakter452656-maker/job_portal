@@ -12,13 +12,13 @@ if (isset($_POST['login'])) {
   $row = $result->fetch_assoc();
 
   if ($result->num_rows > 0) {
-    // Session-এ user-এর তথ্য রাখা। অন্য পেজ এগুলো দিয়ে বোঝে কে login করেছে।
+    // Store the user's info in the session. Other pages use it to know who is logged in.
     $_SESSION['user_id'] = $row['id'];
     $_SESSION['email']   = $row['email'];
     $_SESSION['name']    = $row['name'];
     $_SESSION['role']    = $row['role'];
 
-    // ?next= থাকলে (যেমন Apply/Save করতে এসে login) seeker-কে সেই পেজে ফেরত পাঠাই
+    // If ?next= is set (e.g. logged in to Apply/Save), send the seeker back to that page
     $next = isset($_GET['next']) ? $_GET['next'] : '';
     if ($row['role'] == 'seeker' && $next != '' && strpos($next, '://') === false && substr($next, 0, 2) != '//') {
       header("Location: " . $next);

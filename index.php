@@ -2,11 +2,11 @@
 session_start();
 include('dbconfig.php');
 
-// দিনে একবার: deadline পার হওয়া job আর মেয়াদ শেষ package নিজে থেকে বন্ধ
+// Once a day: close jobs past their deadline and expired packages automatically
 include('auto-expire.php');
 run_auto_expire($conn);
 
-// ===== সব job query-তে একই JOIN লাগে, তাই একবার লিখে রাখলাম =====
+// ===== Every job query needs the same JOIN, so it is written once here =====
 $jobSql = "SELECT jobs.*, companies.name AS company_name, companies.logo,
                   cities.name AS city_name, categories.name AS category_name
            FROM jobs
@@ -15,13 +15,13 @@ $jobSql = "SELECT jobs.*, companies.name AS company_name, companies.logo,
            LEFT JOIN categories ON categories.id = jobs.category_id
            WHERE jobs.status = 'approved' AND jobs.deadline >= CURDATE()";
 
-// Featured Jobs (সর্বোচ্চ ৩টা)
+// Featured Jobs (max 3)
 $featured = $conn->query($jobSql . " AND jobs.is_featured = 1 ORDER BY jobs.id DESC LIMIT 3");
 
-// Latest Jobs (সর্বোচ্চ ৬টা)
+// Latest Jobs (max 6)
 $latest = $conn->query($jobSql . " ORDER BY jobs.id DESC LIMIT 6");
 
-// Popular Categories: প্রতিটা category-তে কয়টা approved job আছে
+// Popular Categories: how many approved jobs each category has
 $categories = $conn->query("SELECT categories.id, categories.name, COUNT(jobs.id) AS total
                             FROM categories
                             LEFT JOIN jobs ON jobs.category_id = categories.id AND jobs.status = 'approved' AND jobs.deadline >= CURDATE()
@@ -29,7 +29,7 @@ $categories = $conn->query("SELECT categories.id, categories.name, COUNT(jobs.id
                             ORDER BY total DESC
                             LIMIT 8");
 
-// Top Companies: যাদের সবচেয়ে বেশি job আছে
+// Top Companies: the ones with the most jobs
 $companies = $conn->query("SELECT companies.id, companies.name, companies.logo, COUNT(jobs.id) AS total
                            FROM companies
                            LEFT JOIN jobs ON jobs.company_id = companies.id AND jobs.status = 'approved' AND jobs.deadline >= CURDATE()
@@ -37,10 +37,10 @@ $companies = $conn->query("SELECT companies.id, companies.name, companies.logo, 
                            ORDER BY total DESC
                            LIMIT 6");
 
-// Search box-এর জন্য city list
+// City list for the search box
 $cities = $conn->query("SELECT * FROM cities ORDER BY name");
 
-// উপরের সংখ্যাগুলো
+// The numbers at the top
 $totalJobs      = $conn->query("SELECT COUNT(*) AS c FROM jobs WHERE status = 'approved' AND deadline >= CURDATE()")->fetch_assoc()['c'];
 $totalCompanies = $conn->query("SELECT COUNT(*) AS c FROM companies")->fetch_assoc()['c'];
 $totalSeekers   = $conn->query("SELECT COUNT(*) AS c FROM seekers")->fetch_assoc()['c'];

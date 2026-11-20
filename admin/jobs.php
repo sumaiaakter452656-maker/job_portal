@@ -9,7 +9,7 @@ foreach ($actions as $key => $newStatus) {
     $jid = (int)$_GET[$key];
     $conn->query("UPDATE jobs SET status = '$newStatus' WHERE id = $jid");
 
-    // Employer-কে notification
+   
     $j = $conn->query("SELECT jobs.title, companies.user_id FROM jobs JOIN companies ON companies.id = jobs.company_id WHERE jobs.id = $jid")->fetch_assoc();
     if ($j) {
       $msg = $conn->real_escape_string('Your job "' . $j['title'] . '" was ' . $newStatus . ' by admin');
@@ -20,7 +20,7 @@ foreach ($actions as $key => $newStatus) {
   }
 }
 
-// Status দিয়ে filter
+
 $status = isset($_GET['status']) ? $_GET['status'] : '';
 $where = '';
 if ($status == 'pending' || $status == 'approved' || $status == 'rejected' || $status == 'closed') {

@@ -1,11 +1,9 @@
 <?php
-// Admin sidebar। সব admin পেজ এই ফাইলটা include করে।
-// $base দিয়ে ঠিক করা হয় পেজটা admin/ নাকি admin/categories/ ফোল্ডারে আছে
 $adminPage = basename($_SERVER['PHP_SELF']);
 $inSub = basename(dirname($_SERVER['PHP_SELF'])) != 'admin';
 $base = $inSub ? '../' : '';
 
-// না-পড়া contact message কয়টা (টেবিল না থাকলে 0)
+
 $unread = 0;
 if (isset($conn)) {
   try {

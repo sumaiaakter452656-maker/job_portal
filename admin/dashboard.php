@@ -2,24 +2,24 @@
 include('include/check.php');
 include('../dbconfig.php');
 
-// দিনে একবার মেয়াদ শেষ job/package বন্ধ; "Run now" চাপলে এখনই
+
 include('../auto-expire.php');
 $expireResult = run_auto_expire($conn, isset($_GET['run_expire']));
 
 
-// ===== সংখ্যাগুলো database থেকে =====
+
 $totalSeekers   = $conn->query("SELECT COUNT(*) AS c FROM users WHERE role = 'seeker'")->fetch_assoc()['c'];
 $totalEmployers = $conn->query("SELECT COUNT(*) AS c FROM users WHERE role = 'employer'")->fetch_assoc()['c'];
 $liveJobs       = $conn->query("SELECT COUNT(*) AS c FROM jobs WHERE status = 'approved' AND deadline >= CURDATE()")->fetch_assoc()['c'];
 $totalApps      = $conn->query("SELECT COUNT(*) AS c FROM job_applications")->fetch_assoc()['c'];
 $pendingJobs    = $conn->query("SELECT COUNT(*) AS c FROM jobs WHERE status = 'pending'")->fetch_assoc()['c'];
 
-// সর্বশেষ ৬টা job
+
 $latestJobs = $conn->query("SELECT jobs.*, companies.name AS company_name FROM jobs
                             JOIN companies ON companies.id = jobs.company_id
                             ORDER BY jobs.id DESC LIMIT 6");
 
-// নতুন ৫ জন user
+
 $newUsers = $conn->query("SELECT * FROM users ORDER BY created_at DESC LIMIT 5");
 
 $jobColor = array('pending' => 'badge-warning', 'approved' => 'badge-success', 'rejected' => 'badge-danger', 'closed' => 'badge-gray');
@@ -53,7 +53,7 @@ $jobColor = array('pending' => 'badge-warning', 'approved' => 'badge-success', '
     </div>
 
     <div class="dash-grid">
-      <!-- সর্বশেষ job -->
+     
       <div class="card">
         <div class="card-header"><h3>Latest jobs</h3><a href="jobs.php?status=pending" class="badge badge-warning"><?php echo $pendingJobs; ?> pending</a></div>
         <div class="table-wrap">
@@ -73,7 +73,7 @@ $jobColor = array('pending' => 'badge-warning', 'approved' => 'badge-success', '
         </div>
       </div>
 
-      <!-- নতুন user -->
+     
       <div class="card">
         <div class="card-header"><h3>New users</h3><a href="users.php" class="btn btn-sm btn-light">All users</a></div>
         <div class="card-body">

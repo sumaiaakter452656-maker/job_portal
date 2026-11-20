@@ -2,13 +2,13 @@
 include('include/check.php');
 $pageTitle = 'Employer Dashboard';
 
-// ===== সংখ্যাগুলো (শুধু আমার company-র) =====
+// ===== Numbers (only for my company) =====
 $activeJobs  = $conn->query("SELECT COUNT(*) AS c FROM jobs WHERE company_id = $companyId AND status = 'approved' AND deadline >= CURDATE()")->fetch_assoc()['c'];
 $pendingJobs = $conn->query("SELECT COUNT(*) AS c FROM jobs WHERE company_id = $companyId AND status = 'pending'")->fetch_assoc()['c'];
 $totalApps   = $conn->query("SELECT COUNT(*) AS c FROM job_applications JOIN jobs ON jobs.id = job_applications.job_id WHERE jobs.company_id = $companyId")->fetch_assoc()['c'];
 $shortApps   = $conn->query("SELECT COUNT(*) AS c FROM job_applications JOIN jobs ON jobs.id = job_applications.job_id WHERE jobs.company_id = $companyId AND job_applications.status IN ('shortlisted','interview','hired')")->fetch_assoc()['c'];
 
-// সাম্প্রতিক ৫ জন applicant
+// Latest 5 applicants
 $recent = $conn->query("SELECT job_applications.*, jobs.title, users.name, users.email
                         FROM job_applications
                         JOIN jobs ON jobs.id = job_applications.job_id
@@ -17,7 +17,7 @@ $recent = $conn->query("SELECT job_applications.*, jobs.title, users.name, users
                         WHERE jobs.company_id = $companyId
                         ORDER BY job_applications.applied_at DESC LIMIT 5");
 
-// আমার সর্বশেষ ৫টা job
+// My latest 5 jobs
 $myJobs = $conn->query("SELECT jobs.*, (SELECT COUNT(*) FROM job_applications WHERE job_applications.job_id = jobs.id) AS total_apps
                         FROM jobs WHERE company_id = $companyId ORDER BY id DESC LIMIT 5");
 ?>

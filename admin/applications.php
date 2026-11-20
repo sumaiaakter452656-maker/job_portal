@@ -2,7 +2,7 @@
 include('include/check.php');
 include('../dbconfig.php');
 
-// সব job application: কে, কোন job-এ, কোন company-তে apply করেছে
+
 $apps = $conn->query("SELECT job_applications.*, jobs.id AS job_id, jobs.title, companies.name AS company_name,
                              users.name AS seeker_name, users.email AS seeker_email
                       FROM job_applications
@@ -12,7 +12,7 @@ $apps = $conn->query("SELECT job_applications.*, jobs.id AS job_id, jobs.title, 
                       JOIN users ON users.id = seekers.user_id
                       ORDER BY job_applications.id DESC");
 
-// status অনুযায়ী badge-এর রং
+
 $colors = array('applied' => 'badge-gray', 'viewed' => 'badge-info', 'shortlisted' => 'badge-primary',
                 'interview' => 'badge-warning', 'hired' => 'badge-success', 'rejected' => 'badge-danger');
 ?>

@@ -1,4 +1,4 @@
-<?php // Modern: বাঁ দিকে রঙিন sidebar, ডান দিকে মূল তথ্য ?>
+<?php // Modern: coloured sidebar on the left, main info on the right ?>
 <style>
   .c2 { display: flex; min-height: 297mm; font-family: "Segoe UI", Arial, sans-serif; }
   .c2 .side { width: 72mm; background: #0c4a6e; color: #e0f2fe; padding: 16mm 9mm; }

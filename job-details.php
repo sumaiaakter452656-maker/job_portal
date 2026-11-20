@@ -2,7 +2,7 @@
 session_start();
 include('dbconfig.php');
 
-// URL থেকে job id নেওয়া (int করলে কেউ উল্টাপাল্টা কিছু পাঠাতে পারবে না)
+// Get the job id from the URL ((int) stops anyone sending something harmful)
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 $result = $conn->query("SELECT jobs.*, companies.id AS company_id, companies.name AS company_name,
@@ -16,15 +16,15 @@ $result = $conn->query("SELECT jobs.*, companies.id AS company_id, companies.nam
 
 $job = $result->fetch_assoc();
 
-// Job না পেলে (বা deadline পার হয়ে গেলে) Jobs পেজে ফেরত
+// If the job is not found (or the deadline has passed), go back to the Jobs page
 if (!$job) {
   header("Location: jobs.php");
   exit;
 }
 
-// ===== Seeker হিসেবে login করা থাকলে: apply/save অবস্থা =====
+// ===== If logged in as a seeker: apply/save state =====
 $isSeeker = isset($_SESSION['role']) && $_SESSION['role'] == 'seeker';
-$applied  = null;    // আগে apply করে থাকলে সেই application
+$applied  = null;    // the application, if the seeker already applied
 $isSaved  = false;
 $applyError = '';
 if ($isSeeker) {
@@ -44,7 +44,7 @@ if (isset($_POST['apply'])) {
   if (!$applied) {
     $resume = '';
 
-    // নতুন CV upload করলে সেটা, না হলে profile-এর CV
+    // Use the newly uploaded CV, otherwise the CV from the profile
     if (isset($_FILES['resume']) && $_FILES['resume']['name'] != '') {
       $ext = strtolower(pathinfo($_FILES['resume']['name'], PATHINFO_EXTENSION));
       if ($ext != 'pdf') {
@@ -57,7 +57,7 @@ if (isset($_POST['apply'])) {
         }
         $resume = 'uploads/cv/seeker_' . $seekerId . '_' . time() . '.pdf';
         move_uploaded_file($_FILES['resume']['tmp_name'], $resume);
-        // profile-এ CV না থাকলে এটাকেই profile CV বানাই
+        // If the profile has no CV yet, make this the profile CV
         if (!$seeker['resume_file']) {
           $conn->query("UPDATE seekers SET resume_file = '$resume' WHERE id = $seekerId");
         }
@@ -72,7 +72,7 @@ if (isset($_POST['apply'])) {
       $conn->query("INSERT INTO job_applications (job_id, seeker_id, resume_file, status)
                     VALUES ($id, $seekerId, '$resume', 'applied')");
 
-      // Employer-কে notification
+      // Notify the employer
       $msg = $conn->real_escape_string($_SESSION['name'] . ' applied for ' . $job['title']);
       $conn->query("INSERT INTO notifications (user_id, message) VALUES ({$job['employer_user']}, '$msg')");
 
@@ -85,12 +85,12 @@ if (isset($_POST['apply'])) {
   }
 }
 
-// এই job-এর skill গুলো
+// This job's skills
 $skills = $conn->query("SELECT skills.name FROM job_skills
                         JOIN skills ON skills.id = job_skills.skill_id
                         WHERE job_skills.job_id = $id");
 
-// Similar Jobs: একই category-র অন্য job
+// Similar Jobs: other jobs in the same category
 $catId = (int)$job['category_id'];
 $similar = $conn->query("SELECT jobs.*, companies.name AS company_name, companies.logo,
                                 cities.name AS city_name, categories.name AS category_name
@@ -229,7 +229,7 @@ $statusLabel = array('applied' => 'Applied', 'viewed' => 'Viewed by employer', '
 </section>
 <?php } ?>
 
-<!-- APPLY MODAL: seeker login করা থাকলে -->
+<!-- APPLY MODAL: when a seeker is logged in -->
 <?php if ($isSeeker && !$applied) { ?>
 <div class="modal" id="applyModal">
   <div class="modal-dialog">

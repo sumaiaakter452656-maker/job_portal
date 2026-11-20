@@ -2,7 +2,7 @@
 include('include/check.php');
 include('../dbconfig.php');
 
-// Role আর search দিয়ে filter
+
 $role = isset($_GET['role']) ? $_GET['role'] : '';
 $q    = isset($_GET['q']) ? $conn->real_escape_string($_GET['q']) : '';
 
@@ -39,7 +39,7 @@ $statusColor = array('active' => 'badge-success', 'pending' => 'badge-warning', 
       </form>
     </div>
 
-    <!-- Role দিয়ে filter -->
+    <!-- Role filter -->
     <div class="tabs mb-2">
       <a class="tab-btn <?php if ($role == '') echo 'active'; ?>" href="users.php">All</a>
       <a class="tab-btn <?php if ($role == 'seeker') echo 'active'; ?>" href="users.php?role=seeker">Job Seekers</a>

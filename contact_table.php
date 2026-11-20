@@ -1,5 +1,5 @@
 <?php
-// Contact form-এর message রাখার টেবিল। না থাকলে বানিয়ে নেয়।
+// Table for Contact form messages. Creates it if it does not exist.
 function contact_setup($conn) {
   $conn->query("CREATE TABLE IF NOT EXISTS contact_messages (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -3,7 +3,7 @@ include('include/check.php');
 include('../payment/aamarpay.php');
 $pageTitle = 'Payment Result';
 
-// এই employer-এর invoice-এর অবস্থা database থেকে দেখানো
+// Show this employer's invoice status from the database
 $invoice = isset($_GET['inv']) ? $conn->real_escape_string($_GET['inv']) : '';
 $trx = $conn->query("SELECT payment_transactions.*, packages.name AS package_name, payment_methods.name AS method_name
                      FROM payment_transactions

@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error = 'Company name is required.';
   }
 
-  // ===== Logo upload (jpg/png, সর্বোচ্চ 2MB) =====
+  // ===== Logo upload (jpg/png, max 2MB) =====
   $logoSql = '';
   if ($error == '' && isset($_FILES['logo']) && $_FILES['logo']['name'] != '') {
     $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                   address = '$address', description = '$description' $logoSql
                   WHERE id = $companyId");
     $success = 'Company profile updated.';
-    // নতুন তথ্য আবার আনা
+    // new information
     $company = $conn->query("SELECT * FROM companies WHERE id = $companyId")->fetch_assoc();
   }
 }

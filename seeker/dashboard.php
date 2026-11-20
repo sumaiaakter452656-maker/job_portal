@@ -2,12 +2,12 @@
 include('include/check.php');
 $pageTitle = 'My Dashboard';
 
-// ===== সংখ্যাগুলো =====
+// ===== Numbers =====
 $totalApplied = $conn->query("SELECT COUNT(*) AS c FROM job_applications WHERE seeker_id = $seekerId")->fetch_assoc()['c'];
 $totalShort   = $conn->query("SELECT COUNT(*) AS c FROM job_applications WHERE seeker_id = $seekerId AND status IN ('shortlisted','interview','hired')")->fetch_assoc()['c'];
 $totalSaved   = $conn->query("SELECT COUNT(*) AS c FROM saved_jobs WHERE seeker_id = $seekerId")->fetch_assoc()['c'];
 
-// ===== কে কে shortlist করেছে (shortlisted / interview / hired) =====
+// ===== Who shortlisted me (shortlisted / interview / hired) =====
 $shortlisted = $conn->query("SELECT job_applications.*, jobs.id AS job_id, jobs.title, companies.name AS company_name
                              FROM job_applications
                              JOIN jobs ON jobs.id = job_applications.job_id
@@ -16,7 +16,7 @@ $shortlisted = $conn->query("SELECT job_applications.*, jobs.id AS job_id, jobs.
                                AND job_applications.status IN ('shortlisted','interview','hired')
                              ORDER BY job_applications.applied_at DESC");
 
-// ===== সাম্প্রতিক ৫টা application =====
+// ===== Latest 5 applications =====
 $recent = $conn->query("SELECT job_applications.*, jobs.id AS job_id, jobs.title, companies.name AS company_name
                         FROM job_applications
                         JOIN jobs ON jobs.id = job_applications.job_id
@@ -27,7 +27,7 @@ $recent = $conn->query("SELECT job_applications.*, jobs.id AS job_id, jobs.title
 // ===== Notification =====
 $notes = $conn->query("SELECT * FROM notifications WHERE user_id = $userId ORDER BY created_at DESC LIMIT 5");
 
-// ===== Recommended Jobs: আমার category-র job, যেগুলোতে এখনো apply করিনি =====
+// ===== Recommended Jobs: jobs in my category that I have not applied to yet =====
 $myCat = (int)$me['category_id'];
 $recommended = $conn->query("SELECT jobs.*, companies.name AS company_name, companies.logo,
                                     cities.name AS city_name, categories.name AS category_name
@@ -57,14 +57,14 @@ $recommended = $conn->query("SELECT jobs.*, companies.name AS company_name, comp
     <a href="../jobs.php" class="btn btn-primary">Browse Jobs</a>
   </div>
 
-  <!-- সংখ্যা -->
+  <!-- Numbers -->
   <div class="grid grid-3 mb-3">
     <a href="applied-jobs.php" class="stat-card"><div class="stat-icon teal">📄</div><div><h3><?php echo $totalApplied; ?></h3><p>Applied jobs</p></div></a>
     <a href="applied-jobs.php?status=shortlisted" class="stat-card"><div class="stat-icon amber">⭐</div><div><h3><?php echo $totalShort; ?></h3><p>Shortlisted</p></div></a>
     <a href="saved-jobs.php" class="stat-card"><div class="stat-icon rose">♥</div><div><h3><?php echo $totalSaved; ?></h3><p>Saved jobs</p></div></a>
   </div>
 
-  <!-- কে কে shortlist করেছে -->
+  <!-- Who shortlisted me -->
   <div class="card mb-3">
     <div class="card-header"><h3>Who shortlisted you</h3></div>
     <div class="card-body">
@@ -92,7 +92,7 @@ $recommended = $conn->query("SELECT jobs.*, companies.name AS company_name, comp
   </div>
 
   <div class="dash-grid mb-3">
-    <!-- সাম্প্রতিক application -->
+    <!-- Recent applications -->
     <div class="card">
       <div class="card-header"><h3>Recent applications</h3><a href="applied-jobs.php" class="btn btn-sm btn-light">View all</a></div>
       <div class="table-wrap">

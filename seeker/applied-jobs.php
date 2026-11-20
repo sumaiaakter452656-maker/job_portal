@@ -2,12 +2,12 @@
 include('include/check.php');
 $pageTitle = 'Applied Jobs';
 
-// Status দিয়ে filter (যেমন ?status=shortlisted)
+// Filter by status (e.g. ?status=shortlisted)
 $status = isset($_GET['status']) ? $_GET['status'] : '';
 
 $where = "WHERE job_applications.seeker_id = $seekerId";
 if ($status == 'shortlisted') {
-  // shortlisted বললে interview আর hired-ও দেখাবো
+  // "shortlisted" also shows interview and hired
   $where .= " AND job_applications.status IN ('shortlisted','interview','hired')";
 } else if (isset($statusLabel[$status])) {
   $where .= " AND job_applications.status = '$status'";

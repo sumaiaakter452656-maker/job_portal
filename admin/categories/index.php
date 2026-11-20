@@ -2,7 +2,7 @@
 include('../include/check.php');
 include('../../dbconfig.php');
 
-// সব category, সাথে কয়টা job আছে
+// All categories, with how many jobs each has
 $rawData = $conn->query("SELECT categories.*, COUNT(jobs.id) AS total_jobs
                          FROM categories LEFT JOIN jobs ON jobs.category_id = categories.id
                          GROUP BY categories.id ORDER BY categories.name");

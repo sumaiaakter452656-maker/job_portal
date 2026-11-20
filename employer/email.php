@@ -2,7 +2,7 @@
 include('include/check.php');
 $pageTitle = 'Email Candidate';
 
-// কোন application-এর candidate-কে email
+// Which application's candidate to email
 $appId = isset($_GET['app']) ? (int)$_GET['app'] : 0;
 $app = $conn->query("SELECT job_applications.*, jobs.title, users.id AS seeker_user, users.name, users.email
                      FROM job_applications
@@ -18,7 +18,7 @@ if (!$app) {
 
 $error = '';
 
-// Status অনুযায়ী আগে থেকে লেখা subject আর message
+// Pre-written subject and message for each status
 if ($app['status'] == 'interview') {
   $subject = 'Interview invitation: ' . $app['title'];
   $message = "Dear " . $app['name'] . ",\n\nThank you for applying for " . $app['title'] . " at " . $company['name'] . ".\nWe would like to invite you for an interview.\n\nDate: \nTime: \nPlace: " . $company['address'] . "\n\nBest regards,\n" . $_SESSION['name'] . "\n" . $company['name'];
@@ -34,12 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($subject == '' || $message == '') {
     $error = 'Subject and message are required.';
   } else {
-    // PHP mail() দিয়ে email পাঠানো। Laragon-এ Mail Catcher-এ দেখা যাবে।
+    // Send the email with PHP mail(). In Laragon it shows up in Mail Catcher.
     $headers = "From: " . $company['name'] . " <" . $_SESSION['email'] . ">\r\n";
     $headers .= "Reply-To: " . $_SESSION['email'] . "\r\n";
     @mail($app['email'], $subject, $message, $headers);
 
-    // Seeker যেন dashboard-এও দেখতে পায়, তাই notification
+    // Also add a notification so the seeker sees it on the dashboard
     $note = $conn->real_escape_string($company['name'] . ' sent you an email: ' . $subject);
     $conn->query("INSERT INTO notifications (user_id, message) VALUES ({$app['seeker_user']}, '$note')");
 

@@ -1,4 +1,4 @@
-<?php // Minimal: সাদামাটা, বাঁ দিকে ছোট section নাম, অনেক ফাঁকা জায়গা ?>
+<?php // Minimal: plain, small section names on the left, lots of white space ?>
 <style>
   .c3 { padding: 22mm 22mm; font-family: "Helvetica Neue", Arial, sans-serif; color: #111827; }
   .c3 h1 { font-size: 34px; font-weight: 300; margin: 0; letter-spacing: -0.5px; }

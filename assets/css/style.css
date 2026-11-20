@@ -545,7 +545,7 @@ select.form-control { appearance: none; padding-right: 36px;
 
 /* =========================================================
    THEME: Ocean Blue & Sun
-   পুরনো রঙে ফিরতে চাইলে এই অংশটা (ফাইলের শেষ পর্যন্ত) মুছে দিন
+   To go back to the old colours, delete this part (to the end of the file)
    ========================================================= */
 :root {
   --primary: #0284c7;
@@ -554,7 +554,7 @@ select.form-control { appearance: none; padding-right: 36px;
   --accent: #facc15;
   --bg: #f0f9ff;
 }
-/* Hero: রঙিন gradient, সাদা লেখা */
+/* Hero: colourful gradient, white text */
 .hero { background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 60%, #06b6d4 100%); border-bottom: 0; color: #fff; }
 .hero h1, .hero .lead, .hero-stats strong { color: #fff; }
 .hero .lead, .hero-stats span, .hero .popular { color: rgba(255,255,255,.85); }
@@ -572,7 +572,7 @@ select.form-control { appearance: none; padding-right: 36px;
 /* Navbar */
 .navbar { border-bottom: 3px solid #0284c7; }
 .logo-mark { background: linear-gradient(135deg, #0284c7, #facc15); }
-/* Category card: প্রতিটায় আলাদা রং */
+/* Category card: a different colour for each */
 .category-card { border-left: 4px solid #0284c7; }
 .grid-4 > .category-card:nth-child(4n+1) .category-icon { background: #ede9fe; color: #7c3aed; }
 .grid-4 > .category-card:nth-child(4n+2) .category-icon { background: #ffedd5; color: #ea580c; }
@@ -595,7 +595,7 @@ select.form-control { appearance: none; padding-right: 36px;
 .sidebar-menu a.active .ic { color: #082f49; }
 .stat-card { border-top: 4px solid #0284c7; }
 .footer { background: #04172a; }
-/* Login / Register বাঁ দিকের অংশ */
+/* Login / Register left side */
 .auth-side { background: linear-gradient(150deg, #0c4a6e 0%, #0284c7 60%, #06b6d4 100%); color: #e0f2fe; }
-/* Logo না থাকলে নামের অক্ষরের বক্স (ছবির logo-তে লাগবে না) */
+/* Box with the name's letters when there is no logo (not used for image logos) */
 div.company-logo, span.company-logo { background: linear-gradient(135deg, #0284c7, #06b6d4) !important; }

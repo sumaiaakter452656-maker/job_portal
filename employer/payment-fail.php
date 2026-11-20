@@ -3,7 +3,7 @@ include('include/check.php');
 include('../payment/demo_gateway.php');
 $pageTitle = 'Payment Failed';
 
-// Gateway-তে payment বাতিল বা ব্যর্থ হলে, আমাদের transaction-কেও failed করা
+// If the payment was cancelled or failed at the gateway, mark our transaction failed too
 $g = gateway_query($conn, isset($_GET['payment_id']) ? $_GET['payment_id'] : '');
 if ($g && ($g['status'] == 'failed' || $g['status'] == 'cancelled')) {
   $invoice = $conn->real_escape_string($g['invoice_no']);

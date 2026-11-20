@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($name == '' || $message == '' || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     $error = 'Please enter your name, a valid email and a message.';
   } else {
-    // message database-এ save, admin "Messages" পেজে দেখবে
+    // Save the message to the database; admin sees it on the "Messages" page
     contact_setup($conn);
     $conn->query("INSERT INTO contact_messages (name, email, subject, message)
                   VALUES ('$name', '$email', '$subject', '$message')");
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="card">
       <div class="card-body">
         <?php
-        // Form submit হলে (POST) তবেই Success message দেখাবে
+        // Show the success message only after the form is submitted (POST)
         if ($error != '') { echo '<div class="alert alert-danger"><span>' . $error . '</span></div>'; }
         if ($sent) {
         ?>

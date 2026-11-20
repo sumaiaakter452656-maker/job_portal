@@ -2,10 +2,10 @@
 include('include/check.php');
 $pageTitle = 'Packages & Billing';
 
-// সব package (Free বাদে, কারণ ওটা প্রথম job post-এ নিজে থেকে পাওয়া যায়)
+// All packages (except Free, which is given automatically on the first job post)
 $packages = $conn->query("SELECT * FROM packages WHERE price > 0 ORDER BY price");
 
-// আমার সব payment
+// All my payments
 $payments = $conn->query("SELECT payment_transactions.*, packages.name AS package_name, payment_methods.name AS method_name
                           FROM payment_transactions
                           JOIN subscriptions ON subscriptions.id = payment_transactions.subscription_id
@@ -31,12 +31,12 @@ $payColor = array('pending' => 'badge-warning', 'completed' => 'badge-success', 
   <div class="page-actions"><div><h2>Packages &amp; Billing</h2><p>Your current package and payment history.</p></div></div>
 
   <?php if (isset($_SESSION['bkash_payment_id'])) { ?>
-    <!-- bKash পেজ থেকে নিজে থেকে ফেরত না এলে এখান থেকে যাচাই করা যায় -->
+    <!-- If bKash does not redirect back automatically, the payment can be verified here -->
     <div class="alert alert-info mb-3"><span>Paid with bKash but did not come back here automatically?
       <a class="btn btn-sm btn-primary" href="bkash-callback.php?paymentID=<?php echo urlencode($_SESSION['bkash_payment_id']); ?>&status=success">Check my bKash payment</a></span></div>
   <?php } ?>
 
-  <!-- চালু package -->
+  <!-- Active package -->
   <div class="card mb-3">
     <div class="card-body">
       <?php if ($sub) { ?>
@@ -49,7 +49,7 @@ $payColor = array('pending' => 'badge-warning', 'completed' => 'badge-success', 
     </div>
   </div>
 
-  <!-- কেনার জন্য package -->
+  <!-- Packages to buy -->
   <div class="grid grid-3 mb-3">
     <?php while ($p = $packages->fetch_assoc()) { ?>
       <div class="card"><div class="card-body">
@@ -79,7 +79,7 @@ $payColor = array('pending' => 'badge-warning', 'completed' => 'badge-success', 
             <td><span class="badge <?php echo $payColor[$pay['status']]; ?>"><?php echo ucfirst($pay['status']); ?></span></td>
             <td>
               <?php if ($pay['status'] == 'pending' && $pay['method_name'] != 'bKash') { ?>
-                <!-- aamarPay থেকে নিজে থেকে ফেরত না এলে: aamarPay-কে আবার জিজ্ঞেস করা -->
+                <!-- If aamarPay does not redirect back automatically: ask aamarPay again -->
                 <a class="btn btn-sm btn-light" href="../payment/aamarpay-return.php?inv=<?php echo urlencode($pay['transaction_no']); ?>">Check</a>
               <?php } ?>
             </td>

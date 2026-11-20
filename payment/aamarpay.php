@@ -1,8 +1,8 @@
 <?php
-// aamarPay Sandbox API-এর সাথে কথা বলার function (Card, Nagad, Rocket ইত্যাদি)
+// Functions for talking to the aamarPay Sandbox API (Card, Nagad, Rocket etc.)
 include_once(__DIR__ . '/aamarpay_config.php');
 
-// ১. Payment তৈরি: aamarPay একটা payment_url দেয়, user-কে সেখানে পাঠাতে হয়
+// 1. Create the payment: aamarPay returns a payment_url, the user must be sent there
 function aamarpay_create($tranId, $amount, $desc, $name, $email, $phone, $returnUrl) {
   $body = array(
     'store_id'      => AAMARPAY_STORE_ID,
@@ -36,11 +36,11 @@ function aamarpay_create($tranId, $amount, $desc, $name, $email, $phone, $return
   if (is_array($data) && isset($data['payment_url'])) {
     return $data;
   }
-  // ব্যর্থ হলে aamarPay যা বলেছে সেটাই দেখাই
+  // On failure, show what aamarPay said
   return array('error' => 'aamarPay: ' . (is_array($data) ? json_encode($data) : strip_tags($response)));
 }
 
-// ২. Payment-এর অবস্থা aamarPay-কে জিজ্ঞেস করা (server-side verification)
+// 2. Ask aamarPay for the payment status (server-side verification)
 function aamarpay_search($tranId) {
   $url = AAMARPAY_SEARCH_URL . '?request_id=' . urlencode($tranId)
        . '&store_id=' . urlencode(AAMARPAY_STORE_ID)
@@ -59,5 +59,5 @@ function aamarpay_search($tranId) {
   if (!is_array($data)) {
     return array('error' => 'Unexpected reply from aamarPay.');
   }
-  return isset($data[0]) ? $data[0] : $data;   // কখনো list আকারে আসে
+  return isset($data[0]) ? $data[0] : $data;   // sometimes it comes as a list
 }

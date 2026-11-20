@@ -1,5 +1,5 @@
 <?php
-// Employer-এর বাঁ দিকের menu আর উপরের bar
+
 $page = basename($_SERVER['PHP_SELF']);
 $newApps = $conn->query("SELECT COUNT(*) AS c FROM job_applications
                           JOIN jobs ON jobs.id = job_applications.job_id

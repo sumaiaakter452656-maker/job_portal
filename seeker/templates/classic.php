@@ -1,4 +1,4 @@
-<?php // Classic: এক কলাম, মাঝখানে নাম, serif শিরোনাম ?>
+<?php // Classic: one column, name in the centre, serif headings ?>
 <style>
   .c1 { padding: 18mm 20mm; font-family: Georgia, "Times New Roman", serif; color: #1f2937; }
   .c1 h1 { text-align: center; font-size: 30px; margin: 0; letter-spacing: 1px; }

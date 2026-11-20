@@ -3,10 +3,10 @@ include('include/check.php');
 $pageTitle = 'My Profile';
 $error = '';
 
-// কোন tab খোলা থাকবে (save করার পর একই tab-এ ফেরত আসার জন্য)
+// Which tab stays open (to return to the same tab after saving)
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'personal';
 
-// ===== ১. Personal info save =====
+// ===== 1. Save personal info =====
 if (isset($_POST['save_personal'])) {
   $name     = $conn->real_escape_string(trim($_POST['name']));
   $phone    = $conn->real_escape_string(trim($_POST['phone']));
@@ -30,7 +30,7 @@ if (isset($_POST['save_personal'])) {
   }
 }
 
-// ===== ২. Education যোগ / মুছে ফেলা =====
+// ===== 2. Add / delete education =====
 if (isset($_POST['add_education'])) {
   $level  = $conn->real_escape_string(trim($_POST['level']));
   $degree = $conn->real_escape_string(trim($_POST['degree_title']));
@@ -54,7 +54,7 @@ if (isset($_GET['del_edu'])) {
   exit;
 }
 
-// ===== ৩. Experience যোগ / মুছে ফেলা =====
+// ===== 3. Add / delete experience =====
 if (isset($_POST['add_experience'])) {
   $cname   = $conn->real_escape_string(trim($_POST['company_name']));
   $desig   = $conn->real_escape_string(trim($_POST['designation']));
@@ -78,9 +78,9 @@ if (isset($_GET['del_exp'])) {
   exit;
 }
 
-// ===== ৪. Skills আর CV =====
+// ===== 4. Skills and CV =====
 if (isset($_POST['save_skills'])) {
-  // পুরনো skill মুছে নতুন করে বসানো
+  // Delete the old skills and insert them again
   $conn->query("DELETE FROM seeker_skills WHERE seeker_id = $seekerId");
   foreach (explode(',', $_POST['skills']) as $sname) {
     $sname = $conn->real_escape_string(trim($sname));
@@ -95,7 +95,7 @@ if (isset($_POST['save_skills'])) {
     $conn->query("INSERT INTO seeker_skills (seeker_id, skill_id) VALUES ($seekerId, $skillId)");
   }
 
-  // CV upload (শুধু PDF, সর্বোচ্চ 2MB)
+  // CV upload (PDF only, max 2MB)
   if (isset($_FILES['resume']) && $_FILES['resume']['name'] != '') {
     $ext = strtolower(pathinfo($_FILES['resume']['name'], PATHINFO_EXTENSION));
     if ($ext != 'pdf') {
@@ -118,7 +118,7 @@ if (isset($_POST['save_skills'])) {
   $tab = 'resume';
 }
 
-// ===== ৫ক. Project / Certificate / Language যোগ / মুছে ফেলা (seeker_cv_items) =====
+// ===== 5a. Add / delete Project / Certificate / Language (seeker_cv_items) =====
 if (isset($_POST['add_item'])) {
   $type  = in_array($_POST['type'], array('project', 'certificate', 'language')) ? $_POST['type'] : 'project';
   $title = $conn->real_escape_string(trim($_POST['title']));
@@ -143,7 +143,7 @@ if (isset($_GET['del_item'])) {
   exit;
 }
 
-// ===== ৫. Password বদলানো =====
+// ===== 5. Change password =====
 if (isset($_POST['change_password'])) {
   $old = sha1($_POST['old_password']);
   $check = $conn->query("SELECT id FROM users WHERE id = $userId AND password = '$old'");
@@ -160,7 +160,7 @@ if (isset($_POST['change_password'])) {
   $tab = 'password';
 }
 
-// ===== পেজে দেখানোর জন্য নতুন করে তথ্য আনা =====
+// ===== Load the data again to show on the page =====
 $me = $conn->query("SELECT seekers.*, users.name, users.email, users.phone FROM seekers
                     JOIN users ON users.id = seekers.user_id WHERE seekers.id = $seekerId")->fetch_assoc();
 $educations  = $conn->query("SELECT * FROM seeker_educations WHERE seeker_id = $seekerId ORDER BY year DESC");
@@ -172,7 +172,7 @@ while ($s = $mySkills->fetch_assoc()) { $skillNames[] = $s['name']; }
 $cities     = $conn->query("SELECT * FROM cities ORDER BY name");
 $categories = $conn->query("SELECT * FROM categories ORDER BY name");
 
-// Profile কতটা পূর্ণ (সহজ হিসাব)
+// How complete the profile is (simple count)
 $done = 0;
 if ($me['headline']) $done++;
 if ($me['summary']) $done++;

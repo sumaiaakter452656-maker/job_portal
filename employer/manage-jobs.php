@@ -2,7 +2,7 @@
 include('include/check.php');
 $pageTitle = 'Manage Jobs';
 
-// ===== Close / Delete (শুধু নিজের company-র job) =====
+// ===== Close / Delete (only my company's jobs) =====
 if (isset($_GET['close'])) {
   $jid = (int)$_GET['close'];
   $conn->query("UPDATE jobs SET status = 'closed' WHERE id = $jid AND company_id = $companyId");
@@ -16,7 +16,7 @@ if (isset($_GET['delete'])) {
   exit;
 }
 
-// আমার সব job, সাথে কতজন apply করেছে
+// All my jobs, with how many people applied
 $jobs = $conn->query("SELECT jobs.*, cities.name AS city_name,
                              (SELECT COUNT(*) FROM job_applications WHERE job_applications.job_id = jobs.id) AS total_apps
                       FROM jobs

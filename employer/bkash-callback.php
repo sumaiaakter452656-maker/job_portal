@@ -5,10 +5,10 @@ include('../payment/activate.php');
 $pageTitle = 'Payment Result';
 
 // =========================================================
-// bKash payment শেষ হলে bKash এই পেজে পাঠায়:
+// When the bKash payment ends, bKash sends the user to this page:
 //   bkash-callback.php?paymentID=...&status=success / failure / cancel
-// শুধু status=success দেখে বিশ্বাস করা হয় না।
-// bKash server-এ execute আর query করে নিজে যাচাই করা হয়।
+// We do not trust status=success alone.
+// We verify it ourselves by calling execute and query on the bKash server.
 // =========================================================
 $paymentId = isset($_GET['paymentID']) ? $_GET['paymentID'] : '';
 $status    = isset($_GET['status']) ? $_GET['status'] : '';
@@ -19,7 +19,7 @@ $result = array();
 if ($paymentId == '') {
   $message = 'No payment information received from bKash.';
 } else if ($status != 'success') {
-  // বাতিল বা ব্যর্থ: bKash থেকে invoice জেনে আমাদের transaction failed করা
+  // Cancelled or failed: get the invoice from bKash and mark our transaction failed
   $q = bkash_query($paymentId);
   if (isset($q['merchantInvoiceNumber'])) {
     $trx = find_invoice($conn, $q['merchantInvoiceNumber'], $userId);
@@ -29,10 +29,10 @@ if ($paymentId == '') {
   }
   $message = 'bKash payment was ' . htmlspecialchars($status) . '. No package was activated.';
 } else {
-  // ১. Execute: bKash-কে payment চূড়ান্ত করতে বলা
+  // 1. Execute: ask bKash to finalise the payment
   $result = bkash_execute($paymentId);
 
-  // ২. Execute সফল না হলে (যেমন আগেই execute হয়েছে) bKash-কে জিজ্ঞেস করা
+  // 2. If execute did not succeed (e.g. already executed), ask bKash for the status
   if (!isset($result['transactionStatus'])) {
     $result = bkash_query($paymentId);
   }
@@ -40,16 +40,16 @@ if ($paymentId == '') {
   if (isset($result['error'])) {
     $message = $result['error'];
   } else if (!isset($result['transactionStatus']) || $result['transactionStatus'] != 'Completed') {
-    // যাচাই ১: bKash বলছে Completed কিনা
+    // Check 1: does bKash say Completed?
     $message = 'bKash says the payment is not completed' . (isset($result['statusMessage']) ? ': ' . $result['statusMessage'] : '.');
   } else {
-    // যাচাই ২: invoice আমাদের database-এ আর এই employer-এর কিনা
+    // Check 2: is the invoice in our database and does it belong to this employer?
     $trx = find_invoice($conn, $result['merchantInvoiceNumber'], $userId);
 
     if (!$trx) {
       $message = 'This invoice does not belong to your account.';
     } else if ($trx['status'] == 'completed') {
-      // যাচাই ৩: আগেই চালু হয়ে গেছে (refresh করলে দুবার হবে না)
+      // Check 3: already activated? (a refresh will not activate it twice)
       $ok = true;
       $message = 'This payment was already verified.';
     } else {
@@ -58,11 +58,11 @@ if ($paymentId == '') {
       $used = $conn->query("SELECT id FROM payment_transactions WHERE tx_id = '$trxId' AND id != {$trx['id']}")->num_rows;
 
       if ((float)$result['amount'] != (float)$trx['total_amount'] || (float)$trx['total_amount'] != (float)$package['price']) {
-        // যাচাই ৪: টাকার পরিমাণ
+        // Check 4: the amount
         $message = 'Amount mismatch. Paid ৳' . $result['amount'] . ' but the package costs ৳' . $package['price'] . '.';
         $conn->query("UPDATE payment_transactions SET status = 'failed' WHERE id = {$trx['id']}");
       } else if ($used > 0) {
-        // যাচাই ৫: একই bKash trxID আগে ব্যবহার হয়েছে কিনা
+        // Check 5: has the same bKash trxID been used before?
         $message = 'This bKash transaction ID was already used.';
       } else {
         activate_package($conn, $trx, $package, $result['trxID'], $userId, $company['name']);
@@ -73,7 +73,7 @@ if ($paymentId == '') {
   }
 }
 
-// এই payment-এর কাজ শেষ, তাই মনে রাখা paymentID মুছে ফেলি
+// This payment is done, so remove the remembered paymentID
 if ($ok || $status != 'success') {
   unset($_SESSION['bkash_payment_id']);
 }

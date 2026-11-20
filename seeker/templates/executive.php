@@ -1,4 +1,4 @@
-<?php // Executive: উপরে রঙিন header band, নিচে দুই কলাম ?>
+<?php // Executive: coloured header band on top, two columns below ?>
 <style>
   .c4 { font-family: "Segoe UI", Arial, sans-serif; color: #1e293b; min-height: 297mm; }
   .c4 .band { background: linear-gradient(135deg, #0c4a6e, #0284c7); color: #fff; padding: 14mm 16mm 12mm; }

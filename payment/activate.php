@@ -1,30 +1,30 @@
 <?php
-// Payment যাচাই হয়ে গেলে package চালু করার function
-// (Demo gateway আর bKash sandbox দুটোই এটা ব্যবহার করে)
+// Function that activates the package after the payment is verified
+// (Used by both the demo gateway and the bKash sandbox)
 function activate_package($conn, $trx, $package, $txId, $userId, $companyName) {
   $txId = $conn->real_escape_string($txId);
 
   // payment completed
   $conn->query("UPDATE payment_transactions SET status = 'completed', tx_id = '$txId' WHERE id = {$trx['id']}");
 
-  // আগের চালু package থাকলে তার বাকি post আর বাকি দিন নতুন package-এ যোগ হবে
+  // If an older package is still active, its remaining posts and days are added to the new package
   $old = $conn->query("SELECT * FROM subscriptions WHERE user_id = $userId AND status = 'active'
                        AND end_date >= CURDATE() AND id != {$trx['subscription_id']}
                        ORDER BY end_date DESC LIMIT 1")->fetch_assoc();
   $extraPosts = $old ? (int)$old['posts_left'] : 0;
-  $startFrom  = $old ? $old['end_date'] : date('Y-m-d');   // পুরনোটা শেষ হওয়ার দিন থেকে মেয়াদ গোনা শুরু
+  $startFrom  = $old ? $old['end_date'] : date('Y-m-d');   // the new period starts from the day the old one ends
 
-  // আগের package বন্ধ (তার post নতুনটায় চলে গেছে)
+  // Close the old package (its posts moved to the new one)
   $conn->query("UPDATE subscriptions SET status = 'expired' WHERE user_id = $userId AND status = 'active'
                 AND id != {$trx['subscription_id']}");
 
-  // নতুন package চালু: নতুন post + আগের বাকি post, মেয়াদ = আগের শেষ দিন + নতুন দিন
+  // Activate the new package: new posts + old remaining posts, end = old end date + new days
   $posts = $package['job_post_limit'] + $extraPosts;
   $end   = date('Y-m-d', strtotime($startFrom . ' +' . $package['duration_days'] . ' days'));
   $conn->query("UPDATE subscriptions SET status = 'active', start_date = CURDATE(), end_date = '$end',
                 posts_left = $posts WHERE id = {$trx['subscription_id']}");
 
-  // Notification: employer আর admin
+  // Notification: employer and admin
   $msg = $conn->real_escape_string('Payment ' . $trx['transaction_no'] . ' completed. ' . $package['name'] . ' package is active'
                                    . ($extraPosts > 0 ? ' (' . $extraPosts . ' unused posts carried over)' : '') . '.');
   $conn->query("INSERT INTO notifications (user_id, message) VALUES ($userId, '$msg')");
@@ -35,7 +35,7 @@ function activate_package($conn, $trx, $package, $txId, $userId, $companyName) {
   }
 }
 
-// আমাদের database-এ invoice খুঁজে বের করা (শুধু এই user-এর)
+// Find the invoice in our database (only for this user)
 function find_invoice($conn, $invoice, $userId) {
   $invoice = $conn->real_escape_string($invoice);
   return $conn->query("SELECT payment_transactions.*, subscriptions.package_id

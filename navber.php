@@ -1,5 +1,5 @@
 <?php
-// কোন পেজ খোলা আছে, সেটা দেখে মেনুতে "active" class বসানো হবে
+// Check which page is open and add the "active" class to that menu item
 $page = basename($_SERVER['PHP_SELF']);
 ?>
 <header class="navbar">
@@ -15,7 +15,7 @@ $page = basename($_SERVER['PHP_SELF']);
     </ul>
     <div class="nav-actions">
       <?php if (isset($_SESSION['role'])) { ?>
-        <!-- Login করা থাকলে: নিজের dashboard আর Logout -->
+        <!-- When logged in: own dashboard and Logout -->
         <a href="<?php echo $_SESSION['role']; ?>/dashboard.php" class="btn btn-light">My Dashboard</a>
         <a href="logout.php" class="btn btn-ghost">Logout</a>
       <?php } else { ?>
