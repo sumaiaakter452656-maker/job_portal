@@ -78,7 +78,7 @@ if ($id > 0) {
   <div class="container">
     <div class="card mb-3"><div class="card-body">
       <h3>About</h3>
-      <p class="mb-0"><?php echo nl2br($company['description']); ?></p>
+      <p class="mb-0"><?php echo nl2br($company['description'] ?? ''); ?></p>
     </div></div>
 
     <h2 class="mb-2">Open jobs (<?php echo $jobs->num_rows; ?>)</h2>

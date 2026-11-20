@@ -63,7 +63,9 @@ function cv_dates($start, $end, $current = 0) {
 }
 
 // ===== শুধু CV (print / PDF / ছোট ছবির জন্য) =====
-if (isset($_GET['print']) || isset($_GET['preview'])) {
+// ?preview=ID ছোট ছবি, ?view=1 শুধু CV, ?pdf=1 নিজে থেকে PDF download, ?print=1 নিজে থেকে print
+$fullView = isset($_GET['print']) || isset($_GET['pdf']) || isset($_GET['view']);
+if ($fullView || isset($_GET['preview'])) {
   $file = 'templates/' . basename($list[$showId]['layout_file']);
   ?>
 <!DOCTYPE html>
@@ -78,13 +80,40 @@ if (isset($_GET['print']) || isset($_GET['preview'])) {
     .cv-page { width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; }
     @media print { body { background: #fff; } }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cv-toolbar { text-align: center; padding: 14px; }
+    .cv-toolbar button { font: inherit; font-weight: 600; padding: 10px 18px; margin: 0 4px; border: 0; border-radius: 8px; cursor: pointer; }
+    .btn-pdf { background: #0369a1; color: #fff; }
+    .btn-print { background: #fff; color: #0f172a; border: 1px solid #cbd5e1 !important; }
+    @media print { .cv-toolbar { display: none; } }
   </style>
 </head>
 <body>
-  <div class="cv-page">
+  <?php if ($fullView) { ?>
+    <div class="cv-toolbar">
+      <button class="btn-pdf" onclick="downloadPdf()">⬇ Download PDF</button>
+      <button class="btn-print" onclick="window.print()">🖨 Print</button>
+    </div>
+  <?php } ?>
+  <div class="cv-page" id="cv">
     <?php if (file_exists($file)) { include($file); } else { echo '<p style="padding:40px">Template file not found.</p>'; } ?>
   </div>
-  <?php if (isset($_GET['print'])) { ?><script>window.onload = function () { window.print(); };</script><?php } ?>
+  <?php if ($fullView) { ?>
+    <!-- html2pdf: পেজটাকে সরাসরি PDF ফাইল বানায় (internet লাগবে) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+      function downloadPdf() {
+        html2pdf().set({
+          margin: 0,
+          filename: <?php echo json_encode(preg_replace('/[^A-Za-z0-9]+/', '-', $cv['name']) . '-CV.pdf'); ?>,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).from(document.getElementById('cv')).save();
+      }
+      <?php if (isset($_GET['pdf'])) { ?>window.onload = downloadPdf;<?php } ?>
+      <?php if (isset($_GET['print'])) { ?>window.onload = function () { window.print(); };<?php } ?>
+    </script>
+  <?php } ?>
 </body>
 </html>
   <?php
@@ -116,7 +145,8 @@ if (isset($_GET['print']) || isset($_GET['preview'])) {
     <div><h2>CV Builder</h2><p>Your CV is made from your profile. Pick a template and download it as PDF.</p></div>
     <div class="flex gap-2">
       <a class="btn btn-light" href="profile.php">Edit profile</a>
-      <a class="btn btn-primary" href="cv.php?print=1" target="_blank">⬇ Download PDF</a>
+      <a class="btn btn-light" href="cv.php?print=1" target="_blank">🖨 Print</a>
+      <a class="btn btn-primary" href="cv.php?pdf=1" target="_blank">⬇ Download PDF</a>
     </div>
   </div>
 
@@ -140,7 +170,7 @@ if (isset($_GET['print']) || isset($_GET['preview'])) {
 
   <div class="card">
     <div class="card-header"><h3>Preview — <?php echo e($list[$currentId]['name']); ?></h3>
-      <span class="small muted">In the print window choose "Save as PDF".</span></div>
+      <span class="small muted">"Download PDF" saves the file directly.</span></div>
     <div class="card-body">
       <iframe class="cv-preview" src="cv.php?preview=<?php echo $currentId; ?>"></iframe>
     </div>

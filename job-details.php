@@ -164,7 +164,7 @@ $statusLabel = array('applied' => 'Applied', 'viewed' => 'Viewed by employer', '
     <article class="card">
       <div class="card-body content-block">
         <h3>Job Description</h3>
-        <p><?php echo nl2br($job['description']); ?></p>
+        <p><?php echo nl2br($job['description'] ?? ''); ?></p>
 
         <?php if ($skills->num_rows > 0) { ?>
           <h3>Skills</h3>

@@ -4,6 +4,16 @@
 $adminPage = basename($_SERVER['PHP_SELF']);
 $inSub = basename(dirname($_SERVER['PHP_SELF'])) != 'admin';
 $base = $inSub ? '../' : '';
+
+// না-পড়া contact message কয়টা (টেবিল না থাকলে 0)
+$unread = 0;
+if (isset($conn)) {
+  try {
+    $unread = (int)$conn->query("SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = 0")->fetch_assoc()['c'];
+  } catch (Exception $e) {
+    $unread = 0;
+  }
+}
 ?>
 <aside class="sidebar">
   <a href="<?php echo $base; ?>../index.php" class="logo"><span class="logo-mark">J</span>JobHub<span class="dot">.</span></a>
@@ -15,6 +25,8 @@ $base = $inSub ? '../' : '';
     <li><a href="<?php echo $base; ?>companies.php" class="<?php if ($adminPage == 'companies.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="15" y2="6"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/></svg> Companies</a></li>
     <li><a href="<?php echo $base; ?>applications.php" class="<?php if ($adminPage == 'applications.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Applicants</a></li>
     <li><a href="<?php echo $base; ?>payments.php" class="<?php if ($adminPage == 'payments.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Payments</a></li>
+    <li><a href="<?php echo $base; ?>messages.php" class="<?php if ($adminPage == 'messages.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H5.17L4 17.17V4z"/></svg> Messages<?php if ($unread > 0) echo ' <span class="badge badge-warning">' . $unread . '</span>'; ?></a></li>
+    <li><a href="<?php echo $base; ?>reports.php" class="<?php if ($adminPage == 'reports.php') echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="20" x2="6" y2="12"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="9"/></svg> Reports</a></li>
     <li><a href="<?php echo $base; ?>categories/index.php" class="<?php if ($inSub) echo 'active'; ?>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg> Categories</a></li>
     <li><a href="<?php echo $base; ?>../index.php"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg> View Website</a></li>
   </ul>

@@ -2,6 +2,11 @@
 include('include/check.php');
 include('../dbconfig.php');
 
+// দিনে একবার মেয়াদ শেষ job/package বন্ধ; "Run now" চাপলে এখনই
+include('../auto-expire.php');
+$expireResult = run_auto_expire($conn, isset($_GET['run_expire']));
+
+
 // ===== সংখ্যাগুলো database থেকে =====
 $totalSeekers   = $conn->query("SELECT COUNT(*) AS c FROM users WHERE role = 'seeker'")->fetch_assoc()['c'];
 $totalEmployers = $conn->query("SELECT COUNT(*) AS c FROM users WHERE role = 'employer'")->fetch_assoc()['c'];
@@ -34,7 +39,11 @@ $jobColor = array('pending' => 'badge-warning', 'approved' => 'badge-success', '
   <!-- ================= TOPBAR ================= -->
    <?php include('include/header.php'); ?>
   <main class="dash-content">
-    <div class="page-actions"><div><h2>Admin overview</h2><p>Platform activity at a glance.</p></div></div>
+    <div class="page-actions"><div><h2>Admin overview</h2><p>Platform activity at a glance.</p></div>
+      <a class="btn btn-light" href="dashboard.php?run_expire=1">⟳ Run expiry check now</a></div>
+    <?php if ($expireResult !== null) { ?>
+      <div class="alert alert-info"><span>Expiry check done: <?php echo $expireResult['jobs']; ?> job(s) closed, <?php echo $expireResult['packages']; ?> package(s) expired.</span><button class="alert-close">&times;</button></div>
+    <?php } ?>
 
     <div class="grid grid-4 mb-3">
       <div class="stat-card"><div class="stat-icon teal"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><h3><?php echo $totalSeekers; ?></h3><p>Job seekers</p></div></div>

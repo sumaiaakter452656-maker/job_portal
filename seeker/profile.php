@@ -218,10 +218,10 @@ $percent = round($done / 7 * 100);
       <div class="tab-pane <?php if ($tab == 'personal') echo 'active'; ?>" id="p-personal">
         <form action="" method="post">
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Full name <span class="req">*</span></label><input class="form-control" name="name" value="<?php echo htmlspecialchars($me['name']); ?>" required></div>
-            <div class="form-group"><label class="form-label">Professional title</label><input class="form-control" name="headline" placeholder="e.g. Junior PHP Developer" value="<?php echo htmlspecialchars($me['headline']); ?>"></div>
+            <div class="form-group"><label class="form-label">Full name <span class="req">*</span></label><input class="form-control" name="name" value="<?php echo htmlspecialchars($me['name'] ?? ''); ?>" required></div>
+            <div class="form-group"><label class="form-label">Professional title</label><input class="form-control" name="headline" placeholder="e.g. Junior PHP Developer" value="<?php echo htmlspecialchars($me['headline'] ?? ''); ?>"></div>
             <div class="form-group"><label class="form-label">Email (login)</label><input class="form-control" value="<?php echo $me['email']; ?>" readonly></div>
-            <div class="form-group"><label class="form-label">Phone</label><input class="form-control" name="phone" value="<?php echo htmlspecialchars($me['phone']); ?>"></div>
+            <div class="form-group"><label class="form-label">Phone</label><input class="form-control" name="phone" value="<?php echo htmlspecialchars($me['phone'] ?? ''); ?>"></div>
             <div class="form-group"><label class="form-label">City</label>
               <select class="form-control" name="city_id">
                 <option value="">Select</option>
@@ -239,7 +239,7 @@ $percent = round($done / 7 * 100);
             <div class="form-group"><label class="form-label">Experience (years)</label><input class="form-control" type="number" min="0" name="experience_years" value="<?php echo (int)$me['experience_years']; ?>"></div>
             <div class="form-group"><label class="form-label">Expected salary (৳)</label><input class="form-control" type="number" name="expected_salary" value="<?php echo $me['expected_salary'] ? (int)$me['expected_salary'] : ''; ?>"></div>
           </div>
-          <div class="form-group"><label class="form-label">About me</label><textarea class="form-control" name="summary" rows="4"><?php echo htmlspecialchars($me['summary']); ?></textarea></div>
+          <div class="form-group"><label class="form-label">About me</label><textarea class="form-control" name="summary" rows="4"><?php echo htmlspecialchars($me['summary'] ?? ''); ?></textarea></div>
           <div class="form-actions"><button class="btn btn-primary" type="submit" name="save_personal">Save changes</button></div>
         </form>
       </div>
@@ -302,7 +302,7 @@ $percent = round($done / 7 * 100);
           <?php if ($items->num_rows == 0) { ?><li><p class="muted mb-0">No projects, certificates or languages added yet.</p></li><?php } ?>
           <?php while ($it = $items->fetch_assoc()) { ?>
             <li>
-              <h4><span class="badge badge-primary"><?php echo ucfirst($it['type']); ?></span> <?php echo htmlspecialchars($it['title']); ?></h4>
+              <h4><span class="badge badge-primary"><?php echo ucfirst($it['type']); ?></span> <?php echo htmlspecialchars($it['title'] ?? ''); ?></h4>
               <p class="muted mb-0">
                 <?php echo htmlspecialchars(trim($it['organization'] . ' ' . ($it['level'] ? '· ' . $it['level'] : ''))); ?>
                 <?php if ($it['start_date']) echo ' · ' . date('M Y', strtotime($it['start_date'])) . ($it['end_date'] ? ' – ' . date('M Y', strtotime($it['end_date'])) : ''); ?>

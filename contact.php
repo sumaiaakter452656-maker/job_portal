@@ -1,4 +1,28 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include('dbconfig.php');
+include('contact_table.php');
+
+$sent = false;
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $name    = $conn->real_escape_string(trim($_POST['name']));
+  $email   = $conn->real_escape_string(trim($_POST['email']));
+  $subject = $conn->real_escape_string(trim($_POST['subject']));
+  $message = $conn->real_escape_string(trim($_POST['message']));
+
+  if ($name == '' || $message == '' || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $error = 'Please enter your name, a valid email and a message.';
+  } else {
+    // message database-এ save, admin "Messages" পেজে দেখবে
+    contact_setup($conn);
+    $conn->query("INSERT INTO contact_messages (name, email, subject, message)
+                  VALUES ('$name', '$email', '$subject', '$message')");
+    $sent = true;
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +48,8 @@
       <div class="card-body">
         <?php
         // Form submit হলে (POST) তবেই Success message দেখাবে
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($error != '') { echo '<div class="alert alert-danger"><span>' . $error . '</span></div>'; }
+        if ($sent) {
         ?>
         <div class="alert alert-success"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Thank you! Your message has been sent.</span><button class="alert-close">&times;</button></div>
         <?php } ?>

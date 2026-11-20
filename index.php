@@ -2,6 +2,10 @@
 session_start();
 include('dbconfig.php');
 
+// দিনে একবার: deadline পার হওয়া job আর মেয়াদ শেষ package নিজে থেকে বন্ধ
+include('auto-expire.php');
+run_auto_expire($conn);
+
 // ===== সব job query-তে একই JOIN লাগে, তাই একবার লিখে রাখলাম =====
 $jobSql = "SELECT jobs.*, companies.name AS company_name, companies.logo,
                   cities.name AS city_name, categories.name AS category_name

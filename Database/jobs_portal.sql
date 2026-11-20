@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 20, 2026 at 06:08 AM
+-- Generation Time: Nov 20, 2026 at 10:11 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.36
 
@@ -101,6 +101,29 @@ INSERT INTO `companies` (`id`, `user_id`, `city_id`, `name`, `logo`, `website`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `contact_messages`
+--
+
+CREATE TABLE `contact_messages` (
+  `id` int UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `subject` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `contact_messages`
+--
+
+INSERT INTO `contact_messages` (`id`, `name`, `email`, `subject`, `message`, `is_read`, `created_at`) VALUES
+(1, 'Test User', 'test@example.com', 'Phase 5 test', 'Hello from the test.', 1, '2026-11-20 09:42:35');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `cv_templates`
 --
 
@@ -119,7 +142,9 @@ CREATE TABLE `cv_templates` (
 
 INSERT INTO `cv_templates` (`id`, `name`, `thumbnail`, `layout_file`, `is_premium`, `status`) VALUES
 (1, 'Classic', NULL, 'templates/classic.php', 0, 'active'),
-(2, 'Modern', NULL, 'templates/modern.php', 0, 'active');
+(2, 'Modern', NULL, 'templates/modern.php', 0, 'active'),
+(3, 'Minimal', NULL, 'templates/minimal.php', 0, 'active'),
+(4, 'Executive', NULL, 'templates/executive.php', 0, 'active');
 
 -- --------------------------------------------------------
 
@@ -182,9 +207,9 @@ INSERT INTO `jobs` (`id`, `company_id`, `category_id`, `city_id`, `subscription_
 (12, 4, 2, 2, NULL, 'Sales Executive', 'demo-sales-executive', 'full_time', 25000.00, 35000.00, 'Grow sales in the Chattogram region.', '2026-12-15', 'approved', 0),
 (13, 4, 4, 3, NULL, 'Graphic Designer', 'demo-graphic-designer', 'part_time', 20000.00, 30000.00, 'Create marketing materials.', '2026-12-05', 'approved', 1),
 (14, 4, 3, 4, NULL, 'Accounts Officer', 'demo-accounts-officer', 'full_time', 30000.00, 40000.00, 'Manage accounts and payroll.', '2026-12-04', 'pending', 0),
-(17, 3, 4, 3, 3, 'fthg', 'fthg', 'full_time', 6787.00, 66677.00, 'sdzxr', '2026-11-11', 'pending', 0),
-(19, 3, 4, 3, 4, 'we', 'we', 'full_time', NULL, NULL, '', '2026-03-31', 'pending', 0),
-(20, 3, 2, 2, 3, 'tyt', 'tyt', 'full_time', NULL, NULL, 'uye5y', '2026-05-05', 'pending', 0),
+(17, 3, 4, 3, 3, 'fthg', 'fthg', 'full_time', 6787.00, 66677.00, 'sdzxr', '2026-11-11', 'closed', 0),
+(19, 3, 4, 3, 4, 'we', 'we', 'full_time', NULL, NULL, '', '2026-03-31', 'closed', 0),
+(20, 3, 2, 2, 3, 'tyt', 'tyt', 'full_time', NULL, NULL, 'uye5y', '2026-05-05', 'closed', 0),
 (30, 3, 1, 1, 3, 'Junior PHP Developer', 'junior-php-developer', 'full_time', 25000.00, 35000.00, 'TechNova Ltd is looking for a Junior PHP Developer to join our web team in Banani.\n\nResponsibilities:\n- Build and update websites using PHP and MySQL\n- Create admin panels with CRUD features\n- Fix bugs and improve page speed\n- Work with the design team to turn mockups into pages\n\nRequirements:\n- Good knowledge of PHP, MySQL, HTML, CSS\n- Basic JavaScript and Bootstrap\n- 0-1 year experience (freshers with good projects can apply)\n- Git knowledge is a plus\n\nBenefits:\n- Two festival bonuses\n- Lunch facility\n- Yearly salary review', '2026-12-20', 'approved', 1),
 (31, 3, 1, 1, 3, 'Frontend Developer', 'frontend-developer', 'remote', 30000.00, 50000.00, 'Work from home and build modern, responsive web pages for our clients.\n\nResponsibilities:\n- Convert Figma designs into HTML/CSS pages\n- Make pages mobile friendly\n- Connect pages with backend APIs using JavaScript (fetch/AJAX)\n\nRequirements:\n- Strong HTML5, CSS3, JavaScript\n- Experience with Bootstrap or Tailwind\n- 1+ year experience\n- Stable internet connection\n\nBenefits:\n- Fully remote\n- Flexible working hours\n- Internet bill support', '2026-12-08', 'approved', 0),
 (32, 3, 4, 1, 3, 'Web Designer (Part-time)', 'web-designer-part-time', 'part_time', 15000.00, 20000.00, 'We need a creative part-time web designer (4 hours/day).\n\nResponsibilities:\n- Design landing pages and website banners\n- Create social media post designs\n- Prepare simple UI mockups in Figma\n\nRequirements:\n- Figma, Photoshop or Illustrator\n- Good sense of colour and typography\n- Portfolio is required\n\nBenefits:\n- Flexible time\n- Can work alongside study', '2026-11-30', 'approved', 0),
@@ -193,7 +218,7 @@ INSERT INTO `jobs` (`id`, `company_id`, `category_id`, `city_id`, `subscription_
 (35, 4, 3, 2, NULL, 'Accounts Intern', 'accounts-intern', 'internship', 8000.00, NULL, 'A 6-month internship for fresh graduates who want to start a career in accounts.\n\nResponsibilities:\n- Help with daily voucher entry\n- Keep bills and receipts in order\n- Prepare simple Excel reports\n\nRequirements:\n- BBA/MBA (Accounting or Finance) student or fresh graduate\n- Good MS Excel skills\n\nBenefits:\n- Monthly allowance\n- Internship certificate\n- Chance of full-time job after internship', '2026-12-02', 'approved', 0),
 (36, 4, 2, 3, NULL, 'Sales Representative', 'sales-representative', 'contract', 18000.00, 25000.00, '1-year contract job for field sales in the Sylhet region.\n\nResponsibilities:\n- Visit shops and take orders\n- Introduce new products to retailers\n- Collect payments and keep records\n\nRequirements:\n- HSC or above\n- Good communication skills\n- Knows the Sylhet area well\n\nBenefits:\n- Daily travel allowance\n- Monthly sales incentive', '2026-12-18', 'approved', 0),
 (37, 4, 3, 4, NULL, 'Senior Accountant', 'senior-accountant', 'full_time', 45000.00, 60000.00, 'We are looking for an experienced Senior Accountant for our Rajshahi branch.\n\nResponsibilities:\n- Prepare monthly and yearly financial statements\n- Handle VAT and income tax returns\n- Manage payroll and bank reconciliation\n- Guide junior accounts staff\n\nRequirements:\n- M.Com/MBA in Accounting; CA (CC) preferred\n- 4+ years experience\n- Tally/ERP and advanced Excel\n\nBenefits:\n- Provident fund\n- Gratuity\n- Two festival bonuses', '2026-12-25', 'approved', 0),
-(38, 3, 1, 1, 3, 'Python Developer (Expired demo)', 'python-developer-expired', 'full_time', 50000.00, 70000.00, 'This job deadline is over, so it will NOT be shown on the website.', '2026-11-17', 'approved', 0),
+(38, 3, 1, 1, 3, 'Python Developer (Expired demo)', 'python-developer-expired', 'full_time', 50000.00, 70000.00, 'This job deadline is over, so it will NOT be shown on the website.', '2026-11-17', 'closed', 0),
 (39, 6, 1, 1, NULL, 'Backend Developer (PHP)', 'cloudnest-backend-php', 'full_time', 40000.00, 60000.00, 'Build APIs for our cloud hosting panel.\n\nResponsibilities:\n- Write PHP/MySQL APIs\n- Improve server performance\n\nRequirements:\n- 2+ years PHP experience\n- Good MySQL knowledge', '2026-12-15', 'approved', 1),
 (40, 6, 1, 1, NULL, 'IT Support Executive', 'cloudnest-it-support', 'full_time', 20000.00, 28000.00, 'Help our customers with hosting and email problems.\n\nRequirements:\n- Basic networking and Linux\n- Good communication in Bangla and English', '2026-12-04', 'approved', 0),
 (41, 7, 4, 1, NULL, 'UI/UX Designer', 'pixelcraft-ui-ux', 'full_time', 35000.00, 50000.00, 'Design websites and mobile apps for our clients.\n\nRequirements:\n- Figma expert\n- Strong portfolio\n- 2+ years experience', '2026-12-10', 'approved', 1),
@@ -231,7 +256,8 @@ INSERT INTO `job_applications` (`id`, `job_id`, `seeker_id`, `resume_file`, `sta
 (13, 12, 6, 'uploads/cv/tanvir.pdf', 'hired', '2026-07-27 14:51:36'),
 (14, 9, 6, 'uploads/cv/tanvir.pdf', 'applied', '2026-11-02 14:51:36'),
 (16, 30, 4, 'uploads/cv/rahim.pdf', 'shortlisted', '2026-11-20 04:30:36'),
-(17, 31, 4, 'uploads/cv/rahim.pdf', 'viewed', '2026-11-20 04:30:36');
+(17, 31, 4, 'uploads/cv/rahim.pdf', 'viewed', '2026-11-20 04:30:36'),
+(18, 46, 8, 'uploads/cv/seeker_8_1795167066.pdf', 'applied', '2026-11-20 09:31:06');
 
 -- --------------------------------------------------------
 
@@ -312,7 +338,12 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`
 (19, 8, 'Payment INV-20261120-27E4AA completed. Premium package is active.', 0, '2026-11-20 05:11:18'),
 (20, 7, 'TechNova Ltd paid ৳4000.00 for Premium (INV-20261120-27E4AA)', 0, '2026-11-20 05:11:18'),
 (21, 8, 'Payment INV-20261120-7EDCBC completed. Standard package is active.', 0, '2026-11-20 05:22:59'),
-(22, 7, 'TechNova Ltd paid ৳1500.00 for Standard (INV-20261120-7EDCBC)', 0, '2026-11-20 05:22:59');
+(22, 7, 'TechNova Ltd paid ৳1500.00 for Standard (INV-20261120-7EDCBC)', 0, '2026-11-20 05:22:59'),
+(23, 20, 'shahin applied for Content Developer (Remote)', 0, '2026-11-20 09:31:06'),
+(24, 8, 'Your job \"we\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
+(25, 8, 'Your job \"tyt\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
+(26, 8, 'Your job \"fthg\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
+(27, 8, 'Your job \"Python Developer (Expired demo)\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34');
 
 -- --------------------------------------------------------
 
@@ -447,10 +478,11 @@ CREATE TABLE `seekers` (
 --
 
 INSERT INTO `seekers` (`id`, `user_id`, `city_id`, `category_id`, `cv_template_id`, `headline`, `summary`, `experience_years`, `expected_salary`, `resume_file`) VALUES
-(4, 10, 1, 1, 2, 'PHP Developer', 'PHP/MySQL developer who loves building web apps.', 2, 35000.00, 'uploads/cv/seeker_4_1795143065.pdf'),
+(4, 10, 1, 1, 4, 'PHP Developer', 'PHP/MySQL developer who loves building web apps.', 2, 35000.00, 'uploads/cv/seeker_4_1795143065.pdf'),
 (5, 11, 1, 4, NULL, 'UI/UX Designer', NULL, 3, 45000.00, NULL),
 (6, 12, 2, 2, NULL, 'Sales Executive', 'Field sales professional.', 1, 22000.00, NULL),
-(7, 13, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL);
+(7, 13, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL),
+(8, 21, 1, NULL, 2, 'PHP Developer', 'ewgftaetfrweafrtweferwftrefertfetg fcvgsdfszgv dfvsefcv fgvrdgxdth ftghdr', 0, NULL, 'uploads/cv/seeker_8_1795167066.pdf');
 
 -- --------------------------------------------------------
 
@@ -477,7 +509,8 @@ CREATE TABLE `seeker_cv_items` (
 INSERT INTO `seeker_cv_items` (`id`, `seeker_id`, `type`, `title`, `organization`, `level`, `link`, `start_date`, `end_date`) VALUES
 (4, 4, 'project', 'Online Job Portal', 'Personal Project', NULL, NULL, '2024-03-01', '2024-06-30'),
 (5, 4, 'certificate', 'PHP & MySQL Web Development', 'IsDB-BISEW', NULL, NULL, '2023-01-01', '2023-06-30'),
-(6, 4, 'language', 'English', NULL, 'Good', NULL, NULL, NULL);
+(6, 4, 'language', 'English', NULL, 'Good', NULL, NULL, NULL),
+(7, 8, 'project', 'JOB PORTAL', 'IsDB-BISEW', 'HINDI/ENGLISH/BANGLA', NULL, '2026-11-20', '2027-01-20');
 
 -- --------------------------------------------------------
 
@@ -502,7 +535,8 @@ CREATE TABLE `seeker_educations` (
 INSERT INTO `seeker_educations` (`id`, `seeker_id`, `level`, `degree_title`, `institution`, `result`, `year`) VALUES
 (4, 4, 'Bachelor', 'BSc in CSE', 'Daffodil International University', 'CGPA 3.60', '2023'),
 (5, 4, 'HSC', 'Science', 'Dhaka College', 'GPA 5.00', '2018'),
-(6, 5, 'Bachelor', 'BFA in Graphic Design', 'University of Dhaka', 'CGPA 3.45', '2021');
+(6, 5, 'Bachelor', 'BFA in Graphic Design', 'University of Dhaka', 'CGPA 3.45', '2021'),
+(7, 8, 'SSC', 'diploma in electronics', 'DMPI', 'CGPA 3.53', '2023');
 
 -- --------------------------------------------------------
 
@@ -646,12 +680,13 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `role`, `status
 (12, 'Tanvir Ahmed', 'seeker3@jobportal.com', '01700000006', '$2y$10$TywG3oVIX0cgOuljkbbQCu9GXrI/vHNBrYRvFoUeSg5FQYRchXQ5G', 'seeker', 'active', '2026-10-30 14:51:36'),
 (13, 'sumaia akter', 'abc@gmail.com', '01758546710', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'seeker', 'active', '2026-11-20 02:20:31'),
 (14, 'SHAHIN', 'shahin@gmail.com', '01710667839', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'employer', 'active', '2026-11-20 02:41:59'),
-(15, 'Arif Hasan', 'hr@cloudnest.test', '01711000001', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
-(16, 'Mitu Akter', 'hr@pixelcraft.test', '01711000002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
-(17, 'Jamal Uddin', 'hr@meghnafoods.test', '01711000003', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
-(18, 'Farhana Islam', 'hr@padmafinance.test', '01711000004', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
-(19, 'Shahin Alam', 'hr@surmalogistics.test', '01711000005', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
-(20, 'Nadia Rahman', 'hr@brightpath.test', '01711000006', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36');
+(15, 'Arif Hasan', 'arif@gmail.com\r\n', '01711000001', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
+(16, 'Mitu Akter', 'mitu@gmail.com\r\n', '01711000002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
+(17, 'Jamal Uddin', 'hrjamal@gmail.com\r\n', '01711000003', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
+(18, 'Farhana Islam', 'Farhana@gmail.com\r\n', '01711000004', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
+(19, 'Shahin Alam', 'hr@gmail.com\r\n', '01711000005', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
+(20, 'Nadia Rahman', 'nadia@gmail.com', '01711000006', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'employer', 'active', '2026-11-20 04:30:36'),
+(21, 'shahin', 'afradi@gmail.com', '01758546710', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'seeker', 'active', '2026-11-20 09:29:11');
 
 --
 -- Indexes for dumped tables
@@ -678,6 +713,12 @@ ALTER TABLE `companies`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `user_id` (`user_id`),
   ADD KEY `fk_companies_city` (`city_id`);
+
+--
+-- Indexes for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cv_templates`
@@ -844,10 +885,16 @@ ALTER TABLE `companies`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `cv_templates`
 --
 ALTER TABLE `cv_templates`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `demo_gateway`
@@ -865,7 +912,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `job_applications`
 --
 ALTER TABLE `job_applications`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `job_skills`
@@ -877,7 +924,7 @@ ALTER TABLE `job_skills`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `packages`
@@ -907,19 +954,19 @@ ALTER TABLE `saved_jobs`
 -- AUTO_INCREMENT for table `seekers`
 --
 ALTER TABLE `seekers`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `seeker_cv_items`
 --
 ALTER TABLE `seeker_cv_items`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `seeker_educations`
 --
 ALTER TABLE `seeker_educations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `seeker_experiences`
@@ -949,7 +996,7 @@ ALTER TABLE `subscriptions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables
@@ -1047,40 +1094,6 @@ ALTER TABLE `seeker_skills`
 ALTER TABLE `subscriptions`
   ADD CONSTRAINT `fk_sub_package` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`) ON DELETE RESTRICT,
   ADD CONSTRAINT `fk_sub_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
--- =========================================================
--- Import করার সময় demo job-গুলোর deadline আজকের তারিখ থেকে সামনে নেওয়া
--- (না হলে কিছুদিন পর অন্য PC-তে import করলে সব job expired দেখাবে)
--- শুধু demo job-এর slug ধরে বদলায়, নিজের post করা job-এ হাত দেয় না
--- =========================================================
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 20 DAY) WHERE `slug` = 'demo-senior-php-developer';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 25 DAY) WHERE `slug` = 'demo-sales-executive';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 15 DAY) WHERE `slug` = 'demo-graphic-designer';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 18 DAY) WHERE `slug` = 'demo-laravel-intern';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 30 DAY) WHERE `slug` = 'junior-php-developer';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 18 DAY) WHERE `slug` = 'frontend-developer';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 10 DAY) WHERE `slug` = 'web-designer-part-time';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 40 DAY) WHERE `slug` = 'laravel-developer';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 22 DAY) WHERE `slug` = 'area-sales-manager';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 12 DAY) WHERE `slug` = 'accounts-intern';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 28 DAY) WHERE `slug` = 'sales-representative';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 35 DAY) WHERE `slug` = 'senior-accountant';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 25 DAY) WHERE `slug` = 'cloudnest-backend-php';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 14 DAY) WHERE `slug` = 'cloudnest-it-support';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 20 DAY) WHERE `slug` = 'pixelcraft-ui-ux';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 10 DAY) WHERE `slug` = 'pixelcraft-design-intern';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 18 DAY) WHERE `slug` = 'meghna-sales-officer';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 21 DAY) WHERE `slug` = 'padma-junior-accountant';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 16 DAY) WHERE `slug` = 'surma-hub-supervisor';
-UPDATE `jobs` SET `deadline` = DATE_ADD(CURDATE(), INTERVAL 30 DAY) WHERE `slug` = 'brightpath-content-dev';
-UPDATE `jobs` SET `deadline` = DATE_SUB(CURDATE(), INTERVAL 3 DAY) WHERE `slug` = 'python-developer-expired';
-
--- CV Builder-এর নতুন দুটো template (আগে থেকে থাকলে আবার যোগ হবে না)
-INSERT INTO `cv_templates` (`name`, `thumbnail`, `layout_file`, `is_premium`, `status`)
-SELECT 'Minimal', NULL, 'templates/minimal.php', 0, 'active' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `cv_templates` WHERE `layout_file` = 'templates/minimal.php');
-INSERT INTO `cv_templates` (`name`, `thumbnail`, `layout_file`, `is_premium`, `status`)
-SELECT 'Executive', NULL, 'templates/executive.php', 0, 'active' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `cv_templates` WHERE `layout_file` = 'templates/executive.php');
-
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

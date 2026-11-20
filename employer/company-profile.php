@@ -80,7 +80,7 @@ $cities = $conn->query("SELECT * FROM cities ORDER BY name");
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Company name <span class="req">*</span></label><input class="form-control" name="name" value="<?php echo htmlspecialchars($company['name']); ?>" required></div>
+        <div class="form-group"><label class="form-label">Company name <span class="req">*</span></label><input class="form-control" name="name" value="<?php echo htmlspecialchars($company['name'] ?? ''); ?>" required></div>
         <div class="form-group"><label class="form-label">City</label>
           <select class="form-control" name="city_id">
             <option value="">Select</option>
@@ -88,10 +88,10 @@ $cities = $conn->query("SELECT * FROM cities ORDER BY name");
               <option value="<?php echo $c['id']; ?>" <?php if ($company['city_id'] == $c['id']) echo 'selected'; ?>><?php echo $c['name']; ?></option>
             <?php } ?>
           </select></div>
-        <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" placeholder="https://" value="<?php echo htmlspecialchars($company['website']); ?>"></div>
-        <div class="form-group"><label class="form-label">Address</label><input class="form-control" name="address" value="<?php echo htmlspecialchars($company['address']); ?>"></div>
+        <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" placeholder="https://" value="<?php echo htmlspecialchars($company['website'] ?? ''); ?>"></div>
+        <div class="form-group"><label class="form-label">Address</label><input class="form-control" name="address" value="<?php echo htmlspecialchars($company['address'] ?? ''); ?>"></div>
       </div>
-      <div class="form-group"><label class="form-label">About the company</label><textarea class="form-control" name="description" rows="5"><?php echo htmlspecialchars($company['description']); ?></textarea></div>
+      <div class="form-group"><label class="form-label">About the company</label><textarea class="form-control" name="description" rows="5"><?php echo htmlspecialchars($company['description'] ?? ''); ?></textarea></div>
       <div class="form-actions"><button class="btn btn-primary" type="submit">Save changes</button></div>
     </div>
   </form>

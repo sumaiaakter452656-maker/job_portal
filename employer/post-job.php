@@ -149,7 +149,7 @@ $types      = array('full_time' => 'Full Time', 'part_time' => 'Part Time', 'rem
     <div class="card-body">
       <h3 class="form-section-title">Basic information</h3>
       <div class="form-group"><label class="form-label">Job title <span class="req">*</span></label>
-        <input class="form-control" name="title" placeholder="e.g. Senior PHP Developer" value="<?php echo htmlspecialchars($job['title']); ?>" required></div>
+        <input class="form-control" name="title" placeholder="e.g. Senior PHP Developer" value="<?php echo htmlspecialchars($job['title'] ?? ''); ?>" required></div>
       <div class="form-row cols-3">
         <div class="form-group"><label class="form-label">Category <span class="req">*</span></label>
           <select class="form-control" name="category_id" required>
@@ -180,7 +180,7 @@ $types      = array('full_time' => 'Full Time', 'part_time' => 'Part Time', 'rem
 
       <h3 class="form-section-title mt-2">Job details</h3>
       <div class="form-group"><label class="form-label">Description <span class="req">*</span></label>
-        <textarea class="form-control" name="description" rows="10" placeholder="About the role&#10;&#10;Responsibilities:&#10;- ...&#10;&#10;Requirements:&#10;- ..." required><?php echo htmlspecialchars($job['description']); ?></textarea>
+        <textarea class="form-control" name="description" rows="10" placeholder="About the role&#10;&#10;Responsibilities:&#10;- ...&#10;&#10;Requirements:&#10;- ..." required><?php echo htmlspecialchars($job['description'] ?? ''); ?></textarea>
         <div class="form-hint">Write responsibilities, requirements and benefits here. New lines are kept.</div></div>
       <div class="form-group"><label class="form-label">Skills</label>
         <input class="form-control" name="skills" placeholder="PHP, MySQL, Laravel" value="<?php echo htmlspecialchars($jobSkills); ?>">
