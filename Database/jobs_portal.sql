@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 20, 2026 at 11:06 AM
+-- Generation Time: Nov 21, 2026 at 04:22 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.36
 
@@ -343,7 +343,11 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`
 (24, 8, 'Your job \"we\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
 (25, 8, 'Your job \"tyt\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
 (26, 8, 'Your job \"fthg\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
-(27, 8, 'Your job \"Python Developer (Expired demo)\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34');
+(27, 8, 'Your job \"Python Developer (Expired demo)\" was closed automatically because the deadline passed.', 0, '2026-11-20 09:42:34'),
+(28, 14, 'Payment INV-20261120-FA743A completed. Standard package is active.', 0, '2026-11-20 17:54:48'),
+(29, 7, 'LG paid ৳1500.00 for Standard (INV-20261120-FA743A)', 0, '2026-11-20 17:54:48'),
+(30, 14, 'Payment INV-20261120-B68ED7 completed. Standard package is active (5 unused posts carried over).', 0, '2026-11-20 17:55:16'),
+(31, 7, 'LG paid ৳1500.00 for Standard (INV-20261120-B68ED7)', 0, '2026-11-20 17:55:16');
 
 -- --------------------------------------------------------
 
@@ -430,7 +434,9 @@ INSERT INTO `payment_transactions` (`id`, `transaction_no`, `user_id`, `subscrip
 (13, 'INV-20261120-E55B24', 8, 13, 2, 1500.00, NULL, 'pending', NULL),
 (14, 'INV-20261120-720B54', 8, 14, 2, 4000.00, NULL, 'pending', NULL),
 (15, 'INV-20261120-27E4AA', 8, 15, 2, 4000.00, 'DKK20PXQ7Q', 'completed', NULL),
-(16, 'INV-20261120-7EDCBC', 8, 16, 3, 1500.00, 'AAM1795152076118253', 'completed', NULL);
+(16, 'INV-20261120-7EDCBC', 8, 16, 3, 1500.00, 'AAM1795152076118253', 'completed', NULL),
+(17, 'INV-20261120-FA743A', 14, 17, 3, 1500.00, 'AAM1795197293118005', 'completed', NULL),
+(18, 'INV-20261120-B68ED7', 14, 18, 6, 1500.00, 'AAM1795197323118146', 'completed', NULL);
 
 -- --------------------------------------------------------
 
@@ -648,7 +654,9 @@ INSERT INTO `subscriptions` (`id`, `user_id`, `package_id`, `posts_left`, `start
 (13, 8, 2, 0, NULL, NULL, 'pending'),
 (14, 8, 3, 0, NULL, NULL, 'pending'),
 (15, 8, 3, 20, '2026-11-20', '2027-01-19', 'expired'),
-(16, 8, 2, 5, '2026-11-20', '2026-12-20', 'active');
+(16, 8, 2, 5, '2026-11-20', '2026-12-20', 'active'),
+(17, 14, 2, 5, '2026-11-20', '2026-12-20', 'expired'),
+(18, 14, 2, 10, '2026-11-20', '2027-01-19', 'active');
 
 -- --------------------------------------------------------
 
@@ -924,7 +932,7 @@ ALTER TABLE `job_skills`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `packages`
@@ -942,7 +950,7 @@ ALTER TABLE `payment_methods`
 -- AUTO_INCREMENT for table `payment_transactions`
 --
 ALTER TABLE `payment_transactions`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `saved_jobs`
@@ -990,7 +998,7 @@ ALTER TABLE `skills`
 -- AUTO_INCREMENT for table `subscriptions`
 --
 ALTER TABLE `subscriptions`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `users`
